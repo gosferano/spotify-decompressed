@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Spotify Authentication Callback</title>
+</head>
+<body>
+  <script>
+    // Get the access token and token type from the URL hash
+    var hash = window.location.hash.substr(1);
+    var params = new URLSearchParams(hash);
+    var accessToken = params.get('access_token');
+    var tokenType = params.get('token_type');
+
+    // Save the access token and token type to localStorage
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('tokenType', tokenType);
+
+    // Redirect back to the main page
+    // window.location.href = '/';
+  </script>
+</body>
+</html>

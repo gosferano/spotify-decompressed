@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Spotify Extended History</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Load jquery strictly before Semantic UI -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.min.js"></script>
+  <!-- Load Semantic UI scripts -->
+  <script type="text/javascript" src="/semantic/dist/semantic.min.js"></script>
+  <link rel="stylesheet" href="/css/mystyles.css">
+</head>
+
+<body>
+
+  <div class="ui container">
+    <h1 class="ui centered header">Spotify Un<span class="ui green text">zip</span>ped</h1>
+    <div class="ui segment">
+      <div class="ui two column middle aligned relaxed grid">
+        <div class="column">
+          <input type="file" id="dataInput" class="ui invisible file input" onchange="handleFileChange()"
+            onclick="this.value=null">
+          <label id="dataInputLabel" for="dataInput" class="fluid ui green icon button">
+            <i class="file archive icon"></i>
+            Load Spotify extended data .zip
+          </label>
+        </div>
+        <div class="column">
+          <button id="login" class="ui disabled fluid button" onclick="login()"><i class="spotify green icon"></i>Sign in with
+            Spotify</button>
+        </div>
+      </div>
+      <div class="ui vertical divider">
+        <span>AND</span>
+        <!-- <i class=" top aligned plus icon"></i> -->
+      </div>
+    </div>
+
+    <div class="ui segment" id="dateRangeSegment">
+      <div class="ui form">
+        <div class="two fields">
+          <div class="field">
+            <label>Start date</label>
+            <div class="ui disabled calendar" id="dateRangeStart">
+              <div class="ui input left icon">
+                <i class="calendar icon"></i>
+                <input type="text" placeholder="Start">
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>End date</label>
+            <div class="ui disabled calendar" id="dateRangeEnd">
+              <div class="ui input left icon">
+                <i class="calendar icon"></i>
+                <input type="text" placeholder="End">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ui top left attached tabular menu">
+      <a class="item active" data-tab="top-artists-tab">Top Artists</a>
+      <a class="item" data-tab="top-tracks-tab">Top Tracks</a>
+      <a class="item" data-tab="top-albums-tab">Top Albums</a>
+      <a class="item" data-tab="extra-1-tab">Extra tab #1</a>
+      <a class="item" data-tab="extra-2-tab">Extra tab #2</a>
+      <a class="item" data-tab="extra-3-tab">Extra tab #3</a>
+
+      <div class="right menu">
+        <div class="ui pointing dropdown link item">
+          <span class="text">Count</span>
+          <i class="dropdown icon"></i>
+          <div class="scrollhint menu">
+            <div class="item active selected" data-value="count">Count</div>
+            <div class="item" data-value="seconds">Duration, s</div>
+            <div class="item" data-value="percentage">Duration, %</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ui bottom attached tab segment active" data-tab="top-artists-tab">
+      <div id="top-artists-list" class="ui ordered list">
+        <!-- Top artists list loaded here -->
+      </div>
+    </div>
+    <div class="ui bottom attached tab segment" data-tab="top-tracks-tab">
+      <div id="top-tracks-list" class="ui ordered list">
+        <!-- Top tracks list loaded here -->
+      </div>
+    </div>
+    <div class="ui bottom attached tab segment" data-tab="top-albums-tab">
+      <div id="top-tracks-list" class="ui ordered list">
+        <!-- Top albums list loaded here -->
+      </div>
+    </div>
+    <div class="ui bottom attached tab segment grid segments" data-tab="extra-1-tab">
+      <div class="ui attached segment">
+        Segment 1
+      </div>
+      <div class="ui attached segment">
+        Segment 2
+      </div>
+      <div class="ui attached segment">
+        Segment 3
+      </div>
+    </div>
+    <div class="ui bottom attached tab segment grid segments" data-tab="extra-2-tab">
+      <div class="ui attached segment">
+        Segment 1
+      </div>
+      <div class="ui attached segment">
+        Segment 2
+      </div>
+      <div class="ui attached segment">
+        Segment 3
+      </div>
+    </div>
+    <div class="ui bottom attached tab segment one column grid" data-tab="extra-3-tab">
+      <div>
+
+      </div>
+      <div class="ui attached segment">
+        Segment 1
+      </div>
+      <div class="ui attached segment">
+        Segment 2
+      </div>
+      <div class="ui attached segment">
+        Segment 3
+      </div>
+    </div>
+  </div>
+
+  <!-- Load utility libraries-->
+  <script type="text/javascript" src="/lib/zip-full.min.js"></script>
+
+  <!-- Custom scripts -->
+  <script>
+    // Spotify Web API credentials
+    var clientId = 'a7d68a1f12b747f3a130824343439411';
+    var redirectUri = 'http://localhost:8000/callback.html';
+
+    // Spotify Web API endpoints
+    var apiEndpoint = 'https://api.spotify.com/v1';
+    var apiHeaders = {};
+
+    // Login button click handler
+    const login = () => {
+      const scopes = ['user-top-read'];
+      const authorizeUrl = 'https://accounts.spotify.com/authorize' +
+        '?response_type=token' +
+        '&client_id=' + encodeURIComponent(clientId) +
+        '&scope=' + encodeURIComponent(scopes.join(' ')) +
+        '&redirect_uri=' + encodeURIComponent(redirectUri);
+
+      // Open the Spotify login page in a new window
+      const loginWindow = window.open(authorizeUrl, 'Spotify', 'width=600,height=600');
+
+      // Poll the login window's URL until we get the access token
+      let loginInterval = setInterval(function () {
+        if (loginWindow.closed) {
+          clearInterval(loginInterval);
+        } else if (loginWindow.location.href.indexOf(redirectUri) === 0) {
+          var hash = loginWindow.location.hash.substring(1);
+          var params = hash.split('&').reduce(function (result, item) {
+            var parts = item.split('=');
+            result[parts[0]] = decodeURIComponent(parts[1]);
+            return result;
+          }, {});
+
+          // Save the access token to the API headers
+          apiHeaders.Authorization = 'Bearer ' + params.access_token;
+
+          // Close the login window
+          loginWindow.close();
+
+          // Fetch the user's top artists, tracks, and albums
+          fetch(apiEndpoint + '/me/top/artists?time_range=long_term&limit=10', { headers: apiHeaders })
+            .then(response => response.json())
+            .then(data => {
+              var artistsList = document.getElementById('top-artists-list');
+              data.items.forEach(function (item) {
+                var itemElement = document.createElement("div");
+                itemElement.className = "item";
+                itemElement.innerHTML = `<div class="middle aligned content"><div class="header">` + item.name + `</div></div>`;
+                artistsList.appendChild(itemElement);
+              });
+            });
+
+          fetch(apiEndpoint + "/me/top/tracks?time_range=long_term&limit=30", { headers: apiHeaders })
+            .then(response => response.json())
+            .then(data => {
+              var tracksList = document.getElementById("top-tracks-list");
+              data.items.forEach(function (item) {
+                var itemElement = document.createElement("div");
+                itemElement.className = "item";
+                itemElement.innerHTML = `<div class="middle aligned content"><div class="header">` + item.name + `</div>` + item.artists[0].name + `</div>`;
+                tracksList.appendChild(itemElement);
+              });
+            });
+        }
+      }, 1000);
+    }
+
+    const msToText = (ms) => {
+      const msInSecond = 1000;
+      const msInMinute = msInSecond * 60;
+      const msInHour = msInSecond * 60 * 60;
+      const msInDay = msInSecond * 60 * 60 * 24;
+      let totalSeconds = (ms / msInSecond).toFixed(1);
+      let totalMinutes = (ms / msInMinute).toFixed(1);
+      let totalHours = (ms / msInHour).toFixed(1);
+      let totalDays = (ms / msInDay).toFixed(1);
+      if (totalSeconds < 60) return totalSeconds + "s";
+      else if (totalMinutes < 60) return totalMinutes + "min";
+      // else if (totalHours < 24) return totalHours + "h";
+      // else return totalDays + "d"
+      else return totalHours + "h";
+    }
+
+    const updateTopTracksList = (tracks) => {
+      var tracksList = document.getElementById("top-tracks-list");
+      tracksList.innerHTML = "";
+      tracks.forEach(function (track) {
+        var itemElement = document.createElement("div");
+        itemElement.className = "item";
+        itemElement.innerHTML = `
+          <div class="right floated content">
+            <div class="ui label">
+              <i class="redo icon"></i>
+              ${track.times_played}
+            </div>
+            <div class="ui label">
+              <i class="stopwatch icon"></i>
+              ${msToText(track.ms_played)}
+            </div>
+          </div>
+          <div class="left middle aligned content">
+            <div class="header">
+              ${track.trackName}
+            </div>
+            ${track.artistName}
+          </div>
+        `
+        tracksList.replaceChildren(itemElement);
+      });
+    }
+
+    const initializeDateRange = (startDate, endDate) => {
+      $("#dateRangeStart").calendar("set date", startDate);
+      $("#dateRangeEnd").calendar("set date", endDate);
+      $("#dateRangeSegment .ui.calendar").removeClass("disabled");
+      $("#dateRangeSegment .ui.calendar .calendar.icon").addClass("green");
+    }
+
+    const parseExtendedHistory = async (file) => {
+      const zipReader = new zip.ZipReader(new zip.BlobReader(file));
+      const zipEntries = await zipReader.getEntries("UTF-8");
+      const historyEntryListPromises = zipEntries
+        .filter((zipEntry) => zipEntry.filename.startsWith("MyData/endsong_"))
+        .map(async (zipEntry) => {
+          var blob = await zipEntry.getData(new zip.BlobWriter(), "UTF-8");
+          var blobAsText = await blob.text();
+          return JSON.parse(blobAsText);
+        });
+      const historyEntryLists = await Promise.all(historyEntryListPromises);
+      return historyEntryLists.flat();
+    }
+
+    const handleFileChange = async () => {
+      $("#dataInputLabel").addClass("disabled loading");
+      const file = $('#dataInput').prop('files')[0];
+      const historyEntries = await parseExtendedHistory(file);
+      console.log(historyEntries);
+
+      let startDate = new Date();
+      let endDate = new Date("1900-01-01");
+      let entriesByArtist = new Object();
+      let entriesByTrack = new Object();
+      historyEntries.forEach((historyEntry) => {
+        startDate = new Date(Math.min(startDate, new Date(historyEntry.ts)));
+        endDate = new Date(Math.max(endDate, new Date(historyEntry.ts)));
+
+        entriesByArtist[historyEntry.master_metadata_album_artist_name] =
+          historyEntry.master_metadata_album_artist_name in entriesByArtist
+            ? entriesByArtist[historyEntry.master_metadata_album_artist_name] + 1 : 1;
+
+        const trackUri = historyEntry.spotify_track_uri;
+        if (!(trackUri in entriesByTrack))
+        {
+          entriesByTrack[trackUri] = {
+            trackUri: trackUri,
+            trackName: historyEntry.master_metadata_track_name,
+            artistName: historyEntry.master_metadata_album_artist_name,
+            times_played: 0,
+            ms_played: 0
+          }
+        }
+
+        const existingEntry = entriesByTrack[trackUri];
+        existingEntry.ms_played += historyEntry.ms_played;
+        existingEntry.times_played += 1;
+      })
+
+      console.log("entriesByArtist", entriesByArtist);
+      console.log("entriesByTrack", entriesByTrack);
+      const selection = Object.values(entriesByTrack).sort((a, b) => - a.times_played + b.times_played).slice(0, 50);
+      console.log("selection", selection);
+      updateTopTracksList(selection);
+
+      initializeDateRange(startDate, endDate);
+      $("#dataInputLabel").removeClass("disabled loading");
+      $("#login.button").removeClass("disabled");
+    };
+
+    $(() => {
+      $(".ui.menu .item").tab();
+      $(".ui.dropdown").dropdown();
+      $("#dateRangeStart").calendar({
+        type: "date",
+        firstDayOfWeek: 1,
+        endCalendar: $("#dateRangeEnd")
+      });
+      $("#dateRangeEnd").calendar({
+        type: "date",
+        firstDayOfWeek: 1,
+        startCalendar: $("#dateRangeStart")
+      });
+    });
+
+  </script>
+</body>
+
+</html>
