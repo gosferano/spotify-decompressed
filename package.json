@@ -18,7 +18,7 @@
     "jszip": "^3.10.1",
     "nuxt": "^2.15.8",
     "nuxt-buefy": "^0.4.24",
-    "vue": "^2.7.10",
+    "vue": "^3.3.4",
     "vue-server-renderer": "^2.7.10",
     "vue-template-compiler": "^2.7.10"
   },
