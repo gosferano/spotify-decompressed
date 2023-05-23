@@ -18,15 +18,10 @@ export default {
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [
-    '@/assets/sass/bulma-vars.scss'
-  ],
+  css: ['@/assets/sass/bulma-vars.scss'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [
-    '~/plugins/spotifyHistoryZipReader.ts',
-    '~/plugins/utils.ts',
-  ],
+  plugins: ['~/plugins/spotifyHistoryZipReader.ts', '~/plugins/utils.ts'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -53,10 +48,10 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    extend(config, {}) {
-        config.node = {
-            fs: 'empty'
-        }
-    }
-},
+    extend(config, _) {
+      config.node = {
+        fs: 'empty',
+      }
+    },
+  },
 }
