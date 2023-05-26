@@ -1,5 +1,5 @@
-export const msToText = (ms: number, showDays: boolean = false) => {
-  const msInSecond: number = 1000
+export const msToText = (ms: number, showDays = false) => {
+  const msInSecond = 1000
   const msInMinute: number = msInSecond * 60
   const msInHour: number = msInSecond * 60 * 60
   const msInDay: number = msInSecond * 60 * 60 * 24
@@ -12,3 +12,11 @@ export const msToText = (ms: number, showDays: boolean = false) => {
   else if (!showDays || totalHours < 24) return totalHours + 'h'
   else return totalDays + 'd'
 }
+
+export default defineNuxtPlugin((/* nuxtApp */) => {
+  return {
+    provide: {
+      msToText,
+    },
+  }
+})
