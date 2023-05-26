@@ -15,12 +15,14 @@
               </p>
             </o-upload>
           </o-field>
-          <div class="is-size-7">
+          <span class="is-size-7">
             Spotify extended history file can be requested from your
-            <a href="https://www.spotify.com/lt-lt/account/privacy/"
-              >Spotify account page</a
+            <NuxtLink
+              to="https://www.spotify.com/lt-lt/account/privacy/"
+              target="blank"
+              >Spotify account page</NuxtLink
             >
-          </div>
+          </span>
         </div>
         <div v-if="false" class="column">
           <o-button
@@ -99,93 +101,131 @@
         </o-tab-item>
 
         <o-tab-item label="Top Tracks">
-          <table class="table is-striped is-narrow is-fullwidth">
-            <tbody>
-              <tr
-                v-for="(entry, index) in trackStatsCurrent"
-                :key="entry.SpotifyTrackUri"
+          <o-table
+            :data="isDataLoaded ? trackStatsCurrent : []"
+            :narrowed="true"
+          >
+            <o-table-column v-slot="props" field="index" numeric>
+              {{
+                (trackStatsPageNumber - 1) * entriesPerPage + props.index + 1
+              }}
+            </o-table-column>
+            <o-table-column v-slot="props" field="TrackName" class="is-clipped">
+              <NuxtLink
+                :to="toTrackWebUrl(props.row.SpotifyTrackUri)"
+                target="blank"
+                >{{ props.row.TrackName }}</NuxtLink
               >
-                <td>
-                  {{ 1 + index + (trackStatsPageNumber - 1) * entriesPerPage }}
-                </td>
-                <td>
-                  <a
-                    :href="toTrackWebUrl(entry.SpotifyTrackUri)"
-                    target="_blank"
-                    >{{ entry.TrackName }}</a
-                  >
-                  -
-                  <span class="has-text-grey">
-                    {{ entry.AlbumArtistName }}</span
-                  >
-                </td>
-                <td>
-                  <div class="is-pulled-right">
-                    <span class="tag is-dark">
-                      <o-icon icon="repeat" size="small"> </o-icon>
-                      {{ entry.TimesPlayed }}
-                    </span>
-                    <span class="tag is-dark">
-                      <o-icon icon="timer" size="small"> </o-icon>
-                      {{ $msToText(entry.MsPlayed) }}
-                    </span>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+              <span class="has-text-grey"
+                >- {{ props.row.AlbumArtistName }}</span
+              >
+            </o-table-column>
+            <o-table-column v-slot="props" field="numbers">
+              <span class="is-pulled-right">
+                <span class="tag is-dark">
+                  <o-icon icon="repeat" size="small"> </o-icon>
+                  {{ props.row.TimesPlayed }}
+                </span>
+                <span class="tag is-dark">
+                  <o-icon icon="timer" size="small"> </o-icon>
+                  {{ $msToText(props.row.MsPlayed) }}
+                </span>
+              </span>
+            </o-table-column>
+          </o-table>
+
           <o-pagination
             v-model:current="trackStatsPageNumber"
             :total="trackStats!.length"
             :per-page="entriesPerPage"
             order="centered"
-            range-before="2"
-            range-after="2"
+            :range-before="2"
+            :range-after="2"
           >
           </o-pagination>
         </o-tab-item>
 
         <o-tab-item label="Top Artists">
-          <table class="table is-striped is-narrow is-fullwidth">
-            <tbody>
-              <tr
-                v-for="(entry, index) in artistStatsCurrent"
-                :key="entry.AlbumArtistName"
-              >
-                <td>
-                  {{ 1 + index + (artistStatsPageNumber - 1) * entriesPerPage }}
-                </td>
-                <td>{{ entry.AlbumArtistName }}</td>
-                <td>
-                  <span class="is-pulled-right">
-                    <span class="tag is-dark">
-                      <o-icon icon="repeat" size="small"> </o-icon>
-                      {{ entry.TimesPlayed }}
-                    </span>
-                    <span class="tag is-dark">
-                      <o-icon icon="timer" size="small"> </o-icon>
-                      {{ $msToText(entry.MsPlayed) }}
-                    </span>
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <o-table
+            :data="isDataLoaded ? artistStatsCurrent : []"
+            :narrowed="true"
+            :striped="true"
+          >
+            <o-table-column v-slot="props" field="index" numeric>
+              {{
+                (artistStatsPageNumber - 1) * entriesPerPage + props.index + 1
+              }}
+            </o-table-column>
+            <o-table-column v-slot="props" field="name">
+              {{ props.row.Name }}
+            </o-table-column>
+            <o-table-column v-slot="props" field="numbers">
+              <span class="is-pulled-right">
+                <span class="tag is-dark">
+                  <o-icon icon="music" size="small"> </o-icon>
+                  {{ props.row.Tracks.size }}
+                </span>
+                <span class="tag is-dark">
+                  <o-icon icon="repeat" size="small"> </o-icon>
+                  {{ props.row.TimesPlayed }}
+                </span>
+                <span class="tag is-dark">
+                  <o-icon icon="timer" size="small"> </o-icon>
+                  {{ $msToText(props.row.MsPlayed) }}
+                </span>
+              </span>
+            </o-table-column>
+          </o-table>
+
           <o-pagination
             v-model:current="artistStatsPageNumber"
             :total="artistStats!.length"
             :per-page="entriesPerPage"
             order="centered"
-            range-before="2"
-            range-after="2"
+            :range-before="2"
+            :range-after="2"
           >
           </o-pagination>
         </o-tab-item>
 
         <o-tab-item label="Top Albums">
-          <div id="top-albums-list" class="ordered list">
-            <!-- Top artists list loaded here -->
-          </div>
+          <o-table
+            :data="isDataLoaded ? albumStatsCurrent : []"
+            :narrowed="true"
+            :striped="true"
+          >
+            <o-table-column v-slot="props" field="index" numeric>
+              {{
+                (albumStatsPageNumber - 1) * entriesPerPage + props.index + 1
+              }}
+            </o-table-column>
+            <o-table-column v-slot="props" field="name">
+              {{ props.row.Name }}
+              <span class="has-text-grey">- {{ props.row.ArtistName }}</span>
+            </o-table-column>
+            <o-table-column v-slot="props" field="numbers">
+              <span class="is-pulled-right">
+                <span class="tag is-dark">
+                  <o-icon icon="music" size="small"> </o-icon>
+                  {{ props.row.Tracks.size }}
+                </span>
+                <span class="tag is-dark">
+                  <o-icon icon="timer" size="small"> </o-icon>
+                  {{ $msToText(props.row.MsPlayed) }}
+                </span>
+              </span>
+            </o-table-column>
+          </o-table>
+
+          <o-pagination
+            v-model:current="albumStatsPageNumber"
+            :total="albumStats!.length"
+            :per-page="entriesPerPage"
+            order="centered"
+            :range-before="2"
+            :range-after="2"
+          >
+          </o-pagination>
         </o-tab-item>
       </o-tabs>
     </section>
@@ -194,7 +234,10 @@
 
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue'
+import SpotifyHistoryAlbumStats from '~/composables/spotify/spotifyHistoryAlbumStats'
+import SpotifyHistoryArtistStats from '~/composables/spotify/spotifyHistoryArtistStats'
 import SpotifyHistoryGlobalStats from '~/composables/spotify/spotifyHistoryGlobalStats'
+import SpotifyHistoryTrackStats from '~/composables/spotify/spotifyHistoryTrackStats'
 import SpotifyHistoryZipReader from '~/composables/spotify/spotifyHistoryZipReader'
 
 const dates = ref<[Date, Date]>()
@@ -202,27 +245,40 @@ const fileRef = ref<File>()
 const globalStats = ref<SpotifyHistoryGlobalStats>(
   new SpotifyHistoryGlobalStats()
 )
-const artistStats = ref<Array<any>>()
-const trackStats = ref<Array<any>>()
+const artistStats = ref<Array<SpotifyHistoryArtistStats>>()
+const artistStatsPageNumber = ref(1)
+
+const trackStats = ref<Array<SpotifyHistoryTrackStats>>()
+const trackStatsPageNumber = ref(1)
+
+const albumStats = ref<Array<SpotifyHistoryAlbumStats>>()
+const albumStatsPageNumber = ref(1)
+
 const isDataLoaded = ref<boolean>(false)
 const activeTab = ref(1)
-const artistStatsPageNumber = ref(1)
-const trackStatsPageNumber = ref(1)
 const entriesPerPage = 25
 
 const artistStatsCurrent = computed(() => {
-  const start = entriesPerPage * (artistStatsPageNumber.value - 1)
-  const end = start + entriesPerPage
-  const currentEntries = artistStats.value?.slice(start, end)
-  return currentEntries
+  return getPage(artistStats.value, artistStatsPageNumber.value, entriesPerPage)
 })
 
 const trackStatsCurrent = computed(() => {
-  const start = entriesPerPage * (trackStatsPageNumber.value - 1)
-  const end = start + entriesPerPage
-  const currentEntries = trackStats.value?.slice(start, end)
-  return currentEntries
+  return getPage(trackStats.value, trackStatsPageNumber.value, entriesPerPage)
 })
+
+const albumStatsCurrent = computed(() => {
+  return getPage(albumStats.value, albumStatsPageNumber.value, entriesPerPage)
+})
+
+const getPage = (
+  array: Array<any> | undefined,
+  page: number,
+  pageSize: number
+) => {
+  const start = pageSize * (page - 1)
+  const end = start + pageSize
+  return array?.slice(start, end)
+}
 
 const toTrackWebUrl = (spotifyTrackUri: string) => {
   return `https://open.spotify.com/track/${
@@ -244,6 +300,7 @@ const loadFile = async (file: File) => {
   globalStats.value = spotifyHistory.getGlobalStats()
   artistStats.value = spotifyHistory.getArtistStats()
   trackStats.value = spotifyHistory.getTrackStats()
+  albumStats.value = spotifyHistory.getAlbumStats()
   isDataLoaded.value = true
 }
 </script>

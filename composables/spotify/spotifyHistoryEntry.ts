@@ -1,5 +1,5 @@
 export default class SpotifyHistoryEntry {
-  public ConnectionCountry: string
+  ConnectionCountry: string
   EpisodeName: string
   EpisodeShowName: string
   IsIncognitoMode: boolean
