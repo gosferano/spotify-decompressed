@@ -3,6 +3,7 @@ export default defineNuxtConfig({
   app: {
     // head
     baseURL: '/spotify-decompressed/',
+    buildAssetsDir: '/spotify-decompressed/_nuxt',
     head: {
       title: 'Spotify Decompressed',
       meta: [
