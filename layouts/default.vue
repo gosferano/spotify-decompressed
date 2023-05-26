@@ -1,19 +1,20 @@
 <template>
-  <div>
+  <span>
     <nav
-      class="header has-shadow has-background-primary has-text-white"
+      class="header is-vcentered"
       role="navigation"
       aria-label="main navigation"
     >
       <level>
-        <a class="navbar-brand level-item">
-          <h1 class="title has-text-white">Spotify Decompressed</h1>
-        </a>
+        <span class="level-item">
+          <h1 class="is-size-4 has-text-weight-semibold">
+            <span class="icon is-small"
+              ><i class="fas fa-image" aria-hidden="true"></i></span
+            >Spotify Decompressed
+          </h1>
+        </span>
       </level>
     </nav>
-
-    <section class="main-content hero m-auto is-fullheight">
-      <Nuxt />
-    </section>
-  </div>
+    <slot />
+  </span>
 </template>

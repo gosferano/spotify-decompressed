@@ -1,59 +1,71 @@
 <template>
   <span>
-    <section v-if="!isProcessingDone" class="section">
+    <section v-if="!isDataLoaded" class="section">
       <div class="columns">
         <div class="column is-half-desktop is-offset-one-quarter-desktop">
-          <b-field class="file">
-            <b-upload v-model="file" expanded>
-              <a class="button is-primary is-fullwidth">
-                <b-icon icon="archive"></b-icon>
-                <span>{{ file?.name || 'Click to upload Spotify data' }}</span>
-              </a>
-            </b-upload>
-          </b-field>
+          <o-field class="file">
+            <o-upload v-model="fileRef" expanded drag-drop>
+              <p class="is-flex is-justify-content-center">
+                <o-icon icon="archive" size="large" class="mdi-48px"> </o-icon>
+              </p>
+              <p class="is-flex is-justify-content-center">
+                <span>{{
+                  fileRef?.name || 'Click to upload Spotify data'
+                }}</span>
+              </p>
+            </o-upload>
+          </o-field>
+          <div class="is-size-7">
+            Spotify extended history file can be requested from your
+            <a href="https://www.spotify.com/lt-lt/account/privacy/"
+              >Spotify account page</a
+            >
+          </div>
         </div>
         <div v-if="false" class="column">
-          <b-button
+          <o-button
             type="is-primary"
             icon-left="spotify"
             expanded
             outlined
             disabled
-            >Sign in with Spotify</b-button
+            >Sign in with Spotify</o-button
           >
         </div>
       </div>
     </section>
 
-    <section v-if="isProcessingDone" class="section">
+    <section v-if="isDataLoaded" class="section">
       <div class="columns">
         <div class="column">
-          <b-field class="is-fullwidth" label="Date range">
-            <b-datepicker
+          <o-field class="is-fullwidth" label="Date range">
+            <o-datepicker
               v-model="dates"
               placeholder="Select date range"
               range
               disabled
             >
-            </b-datepicker>
-          </b-field>
+            </o-datepicker>
+          </o-field>
         </div>
       </div>
 
-      <b-tabs v-model="activeTab" expanded>
-        <b-tab-item label="Global stats">
+      <o-tabs v-model="activeTab" :expanded="true">
+        <o-tab-item label="Global stats">
           <nav class="level">
             <div class="level-item has-text-centered">
               <div>
                 <p class="heading">Duration played</p>
-                <p class="title">{{ msToText(globalStats.MsPlayed) }}</p>
+                <p class="title">{{ $msToText(globalStats.MsPlayed) }}</p>
               </div>
             </div>
             <div class="level-item has-text-centered">
               <div>
                 <p class="heading">Avg. time per track</p>
                 <p class="title">
-                  {{ msToText(globalStats.MsPlayed / globalStats.TimesPlayed) }}
+                  {{
+                    $msToText(globalStats.MsPlayed / globalStats.TimesPlayed)
+                  }}
                 </p>
               </div>
             </div>
@@ -67,33 +79,35 @@
           <nav class="level">
             <div class="level-item has-text-centered">
               <div>
-                <p class="heading">Tracks</p>
+                <p class="heading">Tracks discovered</p>
                 <p class="title">{{ globalStats.TotalTracks }}</p>
               </div>
             </div>
             <div class="level-item has-text-centered">
               <div>
-                <p class="heading">Artists</p>
+                <p class="heading">Artists discovered</p>
                 <p class="title">{{ globalStats.TotalArtists }}</p>
               </div>
             </div>
             <div class="level-item has-text-centered">
               <div>
-                <p class="heading">Albums</p>
+                <p class="heading">Albums discovered</p>
                 <p class="title">{{ globalStats.TotalAlbums }}</p>
               </div>
             </div>
           </nav>
-        </b-tab-item>
+        </o-tab-item>
 
-        <b-tab-item label="Top Tracks">
+        <o-tab-item label="Top Tracks">
           <table class="table is-striped is-narrow is-fullwidth">
             <tbody>
               <tr
                 v-for="(entry, index) in trackStatsCurrent"
                 :key="entry.SpotifyTrackUri"
               >
-                <td>{{ 1 + index + trackStatsPageNumber * entriesPerPage }}</td>
+                <td>
+                  {{ 1 + index + (trackStatsPageNumber - 1) * entriesPerPage }}
+                </td>
                 <td>
                   <a
                     :href="toTrackWebUrl(entry.SpotifyTrackUri)"
@@ -106,30 +120,32 @@
                   >
                 </td>
                 <td>
-                  <span class="is-pulled-right">
-                    <b-tag type="is-dark" size="is-small" icon="repeat">{{
-                      entry.TimesPlayed
-                    }}</b-tag>
-                    <b-tag
-                      type="is-dark"
-                      size="is-small"
-                      icon="timer-outline"
-                      >{{ msToText(entry.MsPlayed) }}</b-tag
-                    >
-                  </span>
+                  <div class="is-pulled-right">
+                    <span class="tag is-dark">
+                      <o-icon icon="repeat" size="small"> </o-icon>
+                      {{ entry.TimesPlayed }}
+                    </span>
+                    <span class="tag is-dark">
+                      <o-icon icon="timer" size="small"> </o-icon>
+                      {{ $msToText(entry.MsPlayed) }}
+                    </span>
+                  </div>
                 </td>
               </tr>
             </tbody>
           </table>
-          <b-pagination
-            v-model="trackStatsPageNumber"
-            :total="trackStats.length"
+          <o-pagination
+            v-model:current="trackStatsPageNumber"
+            :total="trackStats!.length"
             :per-page="entriesPerPage"
+            order="centered"
+            range-before="2"
+            range-after="2"
           >
-          </b-pagination>
-        </b-tab-item>
+          </o-pagination>
+        </o-tab-item>
 
-        <b-tab-item label="Top Artists">
+        <o-tab-item label="Top Artists">
           <table class="table is-striped is-narrow is-fullwidth">
             <tbody>
               <tr
@@ -137,101 +153,111 @@
                 :key="entry.AlbumArtistName"
               >
                 <td>
-                  {{ 1 + index + artistStatsPageNumber * entriesPerPage }}
+                  {{ 1 + index + (artistStatsPageNumber - 1) * entriesPerPage }}
                 </td>
                 <td>{{ entry.AlbumArtistName }}</td>
                 <td>
                   <span class="is-pulled-right">
-                    <b-tag type="is-dark" size="is-small" icon="repeat">{{
-                      entry.TimesPlayed
-                    }}</b-tag>
-                    <b-tag
-                      type="is-dark"
-                      size="is-small"
-                      icon="timer-outline"
-                      >{{ msToText(entry.MsPlayed) }}</b-tag
-                    >
+                    <span class="tag is-dark">
+                      <o-icon icon="repeat" size="small"> </o-icon>
+                      {{ entry.TimesPlayed }}
+                    </span>
+                    <span class="tag is-dark">
+                      <o-icon icon="timer" size="small"> </o-icon>
+                      {{ $msToText(entry.MsPlayed) }}
+                    </span>
                   </span>
                 </td>
               </tr>
             </tbody>
           </table>
-          <b-pagination
-            v-model="artistStatsPageNumber"
-            :total="artistStats.length"
+          <o-pagination
+            v-model:current="artistStatsPageNumber"
+            :total="artistStats!.length"
             :per-page="entriesPerPage"
+            order="centered"
+            range-before="2"
+            range-after="2"
           >
-          </b-pagination>
-        </b-tab-item>
+          </o-pagination>
+        </o-tab-item>
 
-        <b-tab-item label="Top Albums">
+        <o-tab-item label="Top Albums">
           <div id="top-albums-list" class="ordered list">
             <!-- Top artists list loaded here -->
           </div>
-        </b-tab-item>
-      </b-tabs>
+        </o-tab-item>
+      </o-tabs>
     </section>
   </span>
 </template>
 
-<script>
-import { SpotifyHistoryZipReader } from '~/plugins/spotifyHistoryZipReader'
-import { msToText as msToTextImpl } from '~/plugins/utils'
+<script lang="ts" setup>
+import { ref, computed, watch } from 'vue'
+import SpotifyHistoryGlobalStats from '~/composables/spotify/spotifyHistoryGlobalStats'
+import SpotifyHistoryZipReader from '~/composables/spotify/spotifyHistoryZipReader'
 
-export default {
-  data() {
-    return {
-      activeTab: 0,
-      dates: null,
-      file: null,
-      globalStats: {},
-      artistStats: [],
-      artistStatsCount: 0,
-      artistStatsPageNumber: 0,
-      trackStats: [],
-      trackStatsCount: 0,
-      trackStatsPageNumber: 0,
-      entriesPerPage: 25,
-      today: Date.now,
-      isProcessingDone: false,
-    }
-  },
-  computed: {
-    artistStatsCurrent() {
-      const start = this.entriesPerPage * this.artistStatsPageNumber
-      const end = this.entriesPerPage * (this.artistStatsPageNumber + 1)
-      const currentEntries = this.artistStats.slice(start, end)
-      return currentEntries
-    },
-    trackStatsCurrent() {
-      const start = this.entriesPerPage * this.trackStatsPageNumber
-      const end = this.entriesPerPage * (this.trackStatsPageNumber + 1)
-      const currentEntries = this.trackStats.slice(start, end)
-      return currentEntries
-    },
-  },
-  watch: {
-    file: async function (uploadedFile) {
-      const reader = new SpotifyHistoryZipReader()
-      const spotifyHistory = await reader.parseExtendedHistory(uploadedFile)
+const dates = ref<[Date, Date]>()
+const fileRef = ref<File>()
+const globalStats = ref<SpotifyHistoryGlobalStats>(
+  new SpotifyHistoryGlobalStats()
+)
+const artistStats = ref<Array<any>>()
+const trackStats = ref<Array<any>>()
+const isDataLoaded = ref<boolean>(false)
+const activeTab = ref(1)
+const artistStatsPageNumber = ref(1)
+const trackStatsPageNumber = ref(1)
+const entriesPerPage = 25
 
-      this.dates = spotifyHistory.getDateRange()
-      this.globalStats = spotifyHistory.getGlobalStats()
-      this.artistStats = spotifyHistory.getArtistStats()
-      this.trackStats = spotifyHistory.getTrackStats()
+const artistStatsCurrent = computed(() => {
+  const start = entriesPerPage * (artistStatsPageNumber.value - 1)
+  const end = start + entriesPerPage
+  const currentEntries = artistStats.value?.slice(start, end)
+  return currentEntries
+})
 
-      this.isProcessingDone = true
-    },
-  },
-  methods: {
-    msToText(ms) {
-      return msToTextImpl(ms)
-    },
-    toTrackWebUrl(spotifyTrackUri) {
-      return `https://open.spotify.com/track/${
-        spotifyTrackUri.split(':').slice(-1)[0]
-      }`
-    },
-  },
+const trackStatsCurrent = computed(() => {
+  const start = entriesPerPage * (trackStatsPageNumber.value - 1)
+  const end = start + entriesPerPage
+  const currentEntries = trackStats.value?.slice(start, end)
+  return currentEntries
+})
+
+const toTrackWebUrl = (spotifyTrackUri: string) => {
+  return `https://open.spotify.com/track/${
+    spotifyTrackUri.split(':').slice(-1)[0]
+  }`
+}
+
+watch(fileRef, () => {
+  if (fileRef.value) {
+    loadFile(fileRef.value)
+  }
+})
+
+const loadFile = async (file: File) => {
+  const reader = new SpotifyHistoryZipReader()
+  const spotifyHistory = await reader.parseExtendedHistory(file)
+
+  dates.value = spotifyHistory.getDateRange()
+  globalStats.value = spotifyHistory.getGlobalStats()
+  artistStats.value = spotifyHistory.getArtistStats()
+  trackStats.value = spotifyHistory.getTrackStats()
+  isDataLoaded.value = true
 }
 </script>
+
+<style>
+.tag {
+  margin-left: 0.2em;
+}
+
+.field.file {
+  margin-bottom: 0.2em;
+}
+
+.tag:not(body) .icon:first-child:last-child {
+  margin-right: 0.1em;
+}
+</style>

@@ -1,0 +1,12 @@
+$spotify-green: #1db954;
+$primary: $spotify-green;
+$information: $spotify-green;
+$link: $spotify-green;
+@import 'bulma/sass/utilities/_all';
+@import 'bulma/bulma';
+@import '@oruga-ui/theme-bulma/dist/scss/bulma';
+
+.upload-draggable.is-hovered {
+  border-color: $spotify-green;
+  color: $spotify-green;
+}
