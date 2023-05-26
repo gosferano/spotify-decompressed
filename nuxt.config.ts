@@ -16,7 +16,6 @@ export default defineNuxtConfig({
     },
   },
   plugins: ['~/plugins/utils.ts'],
-  modules: ['nuxt-purgecss'],
   ssr: false,
   css: [
     '@oruga-ui/oruga-next/src/scss/oruga-full-vars.scss',
@@ -26,9 +25,5 @@ export default defineNuxtConfig({
   typescript: {
     strict: true,
     shim: false,
-  },
-  purgecss: {
-    enabled: true, // Always enable purgecss
-    // safelist: ['my-class'], // Add my-class token to the safelist (e.g. .my-class)
   },
 })
