@@ -39,7 +39,9 @@
 
     <section v-if="isDataLoaded" class="section">
       <div class="columns">
-        <div class="column">
+        <div
+          class="column is-8-fullhd is-offset-2-fullhd is-10-widescreen is-offset-1-widescreen"
+        >
           <o-field class="is-fullwidth" label="Date range">
             <o-datepicker
               v-model="dates"
@@ -52,182 +54,219 @@
         </div>
       </div>
 
-      <o-tabs v-model="activeTab" :expanded="true">
-        <o-tab-item label="Global stats">
-          <nav class="level">
-            <div class="level-item has-text-centered">
-              <div>
-                <p class="heading">Duration played</p>
-                <p class="title">{{ $msToText(globalStats.MsPlayed) }}</p>
-              </div>
-            </div>
-            <div class="level-item has-text-centered">
-              <div>
-                <p class="heading">Avg. time per track</p>
-                <p class="title">
+      <div class="columns">
+        <div
+          class="column is-8-fullhd is-offset-2-fullhd is-10-widescreen is-offset-1-widescreen"
+        >
+          <o-tabs v-model="activeTab" :expanded="true">
+            <o-tab-item label="Global stats">
+              <nav class="level">
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Duration played</p>
+                    <p class="title">{{ $msToText(globalStats.MsPlayed) }}</p>
+                  </div>
+                </div>
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Avg. time per track</p>
+                    <p class="title">
+                      {{
+                        $msToText(
+                          globalStats.MsPlayed / globalStats.TimesPlayed
+                        )
+                      }}
+                    </p>
+                  </div>
+                </div>
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Times played</p>
+                    <p class="title">{{ globalStats.TimesPlayed }}</p>
+                  </div>
+                </div>
+              </nav>
+              <nav class="level">
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Tracks discovered</p>
+                    <p class="title">{{ globalStats.TotalTracks }}</p>
+                  </div>
+                </div>
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Artists discovered</p>
+                    <p class="title">{{ globalStats.TotalArtists }}</p>
+                  </div>
+                </div>
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Albums discovered</p>
+                    <p class="title">{{ globalStats.TotalAlbums }}</p>
+                  </div>
+                </div>
+              </nav>
+            </o-tab-item>
+
+            <o-tab-item label="Top Tracks" class="toplist">
+              <o-table
+                :data="isDataLoaded ? trackStatsCurrent : []"
+                :narrowed="true"
+                :striped="true"
+              >
+                <o-table-column v-slot="props" field="index" label="#" numeric>
                   {{
-                    $msToText(globalStats.MsPlayed / globalStats.TimesPlayed)
+                    (trackStatsPageNumber - 1) * entriesPerPage +
+                    props.index +
+                    1
                   }}
-                </p>
-              </div>
-            </div>
-            <div class="level-item has-text-centered">
-              <div>
-                <p class="heading">Times played</p>
-                <p class="title">{{ globalStats.TimesPlayed }}</p>
-              </div>
-            </div>
-          </nav>
-          <nav class="level">
-            <div class="level-item has-text-centered">
-              <div>
-                <p class="heading">Tracks discovered</p>
-                <p class="title">{{ globalStats.TotalTracks }}</p>
-              </div>
-            </div>
-            <div class="level-item has-text-centered">
-              <div>
-                <p class="heading">Artists discovered</p>
-                <p class="title">{{ globalStats.TotalArtists }}</p>
-              </div>
-            </div>
-            <div class="level-item has-text-centered">
-              <div>
-                <p class="heading">Albums discovered</p>
-                <p class="title">{{ globalStats.TotalAlbums }}</p>
-              </div>
-            </div>
-          </nav>
-        </o-tab-item>
+                </o-table-column>
+                <o-table-column
+                  v-slot="props"
+                  field="TrackName"
+                  label="Track"
+                  class="is-clipped"
+                >
+                  <NuxtLink
+                    :to="toTrackWebUrl(props.row.SpotifyTrackUri)"
+                    target="blank"
+                    >{{ props.row.TrackName }}
+                  </NuxtLink>
+                  <span class="has-text-grey"
+                    >- {{ props.row.AlbumArtistName }}</span
+                  >
+                </o-table-column>
+                <o-table-column
+                  v-slot="props"
+                  field="numbers"
+                  position="right"
+                  label="Stats"
+                >
+                  <span class="is-pulled-right">
+                    <span class="tag is-dark">
+                      <o-icon icon="repeat" size="small"> </o-icon>
+                      {{ props.row.TimesPlayed }}
+                    </span>
+                    <span class="tag is-dark">
+                      <o-icon icon="timer" size="small"> </o-icon>
+                      {{ $msToText(props.row.MsPlayed) }}
+                    </span>
+                  </span>
+                </o-table-column>
+              </o-table>
 
-        <o-tab-item label="Top Tracks">
-          <o-table
-            :data="isDataLoaded ? trackStatsCurrent : []"
-            :narrowed="true"
-          >
-            <o-table-column v-slot="props" field="index" numeric>
-              {{
-                (trackStatsPageNumber - 1) * entriesPerPage + props.index + 1
-              }}
-            </o-table-column>
-            <o-table-column v-slot="props" field="TrackName" class="is-clipped">
-              <NuxtLink
-                :to="toTrackWebUrl(props.row.SpotifyTrackUri)"
-                target="blank"
-                >{{ props.row.TrackName }}</NuxtLink
+              <o-pagination
+                v-model:current="trackStatsPageNumber"
+                :total="trackStats!.length"
+                :per-page="entriesPerPage"
+                order="centered"
+                :range-before="2"
+                :range-after="2"
               >
-              <span class="has-text-grey"
-                >- {{ props.row.AlbumArtistName }}</span
+              </o-pagination>
+            </o-tab-item>
+
+            <o-tab-item label="Top Artists" class="toplist">
+              <o-table
+                :data="isDataLoaded ? artistStatsCurrent : []"
+                :narrowed="true"
+                :striped="true"
               >
-            </o-table-column>
-            <o-table-column v-slot="props" field="numbers">
-              <span class="is-pulled-right">
-                <span class="tag is-dark">
-                  <o-icon icon="repeat" size="small"> </o-icon>
-                  {{ props.row.TimesPlayed }}
-                </span>
-                <span class="tag is-dark">
-                  <o-icon icon="timer" size="small"> </o-icon>
-                  {{ $msToText(props.row.MsPlayed) }}
-                </span>
-              </span>
-            </o-table-column>
-          </o-table>
+                <o-table-column v-slot="props" field="index" label="#" numeric>
+                  {{
+                    (artistStatsPageNumber - 1) * entriesPerPage +
+                    props.index +
+                    1
+                  }}
+                </o-table-column>
+                <o-table-column v-slot="props" field="name" label="Artist">
+                  {{ props.row.Name }}
+                </o-table-column>
+                <o-table-column
+                  v-slot="props"
+                  field="numbers"
+                  position="right"
+                  label="Stats"
+                >
+                  <span class="is-pulled-right">
+                    <span class="tag is-dark">
+                      <o-icon icon="music" size="small"> </o-icon>
+                      {{ props.row.Tracks.size }}
+                    </span>
+                    <span class="tag is-dark">
+                      <o-icon icon="repeat" size="small"> </o-icon>
+                      {{ props.row.TimesPlayed }}
+                    </span>
+                    <span class="tag is-dark">
+                      <o-icon icon="timer" size="small"> </o-icon>
+                      {{ $msToText(props.row.MsPlayed) }}
+                    </span>
+                  </span>
+                </o-table-column>
+              </o-table>
 
-          <o-pagination
-            v-model:current="trackStatsPageNumber"
-            :total="trackStats!.length"
-            :per-page="entriesPerPage"
-            order="centered"
-            :range-before="2"
-            :range-after="2"
-          >
-          </o-pagination>
-        </o-tab-item>
+              <o-pagination
+                v-model:current="artistStatsPageNumber"
+                :total="artistStats!.length"
+                :per-page="entriesPerPage"
+                order="centered"
+                :range-before="2"
+                :range-after="2"
+              >
+              </o-pagination>
+            </o-tab-item>
 
-        <o-tab-item label="Top Artists">
-          <o-table
-            :data="isDataLoaded ? artistStatsCurrent : []"
-            :narrowed="true"
-            :striped="true"
-          >
-            <o-table-column v-slot="props" field="index" numeric>
-              {{
-                (artistStatsPageNumber - 1) * entriesPerPage + props.index + 1
-              }}
-            </o-table-column>
-            <o-table-column v-slot="props" field="name">
-              {{ props.row.Name }}
-            </o-table-column>
-            <o-table-column v-slot="props" field="numbers">
-              <span class="is-pulled-right">
-                <span class="tag is-dark">
-                  <o-icon icon="music" size="small"> </o-icon>
-                  {{ props.row.Tracks.size }}
-                </span>
-                <span class="tag is-dark">
-                  <o-icon icon="repeat" size="small"> </o-icon>
-                  {{ props.row.TimesPlayed }}
-                </span>
-                <span class="tag is-dark">
-                  <o-icon icon="timer" size="small"> </o-icon>
-                  {{ $msToText(props.row.MsPlayed) }}
-                </span>
-              </span>
-            </o-table-column>
-          </o-table>
+            <o-tab-item label="Top Albums">
+              <o-table
+                :data="isDataLoaded ? albumStatsCurrent : []"
+                :narrowed="true"
+                :striped="true"
+              >
+                <o-table-column v-slot="props" field="index" numeric label="#">
+                  {{
+                    (albumStatsPageNumber - 1) * entriesPerPage +
+                    props.index +
+                    1
+                  }}
+                </o-table-column>
+                <o-table-column v-slot="props" field="name" label="Album">
+                  {{ props.row.Name }}
+                  <span class="has-text-grey"
+                    >- {{ props.row.ArtistName }}</span
+                  >
+                </o-table-column>
+                <o-table-column
+                  v-slot="props"
+                  field="numbers"
+                  label="Stats"
+                  position="right"
+                >
+                  <span class="is-pulled-right">
+                    <span class="tag is-dark">
+                      <o-icon icon="music" size="small"> </o-icon>
+                      {{ props.row.Tracks.size }}
+                    </span>
+                    <span class="tag is-dark">
+                      <o-icon icon="timer" size="small"> </o-icon>
+                      {{ $msToText(props.row.MsPlayed) }}
+                    </span>
+                  </span>
+                </o-table-column>
+              </o-table>
 
-          <o-pagination
-            v-model:current="artistStatsPageNumber"
-            :total="artistStats!.length"
-            :per-page="entriesPerPage"
-            order="centered"
-            :range-before="2"
-            :range-after="2"
-          >
-          </o-pagination>
-        </o-tab-item>
-
-        <o-tab-item label="Top Albums">
-          <o-table
-            :data="isDataLoaded ? albumStatsCurrent : []"
-            :narrowed="true"
-            :striped="true"
-          >
-            <o-table-column v-slot="props" field="index" numeric>
-              {{
-                (albumStatsPageNumber - 1) * entriesPerPage + props.index + 1
-              }}
-            </o-table-column>
-            <o-table-column v-slot="props" field="name">
-              {{ props.row.Name }}
-              <span class="has-text-grey">- {{ props.row.ArtistName }}</span>
-            </o-table-column>
-            <o-table-column v-slot="props" field="numbers">
-              <span class="is-pulled-right">
-                <span class="tag is-dark">
-                  <o-icon icon="music" size="small"> </o-icon>
-                  {{ props.row.Tracks.size }}
-                </span>
-                <span class="tag is-dark">
-                  <o-icon icon="timer" size="small"> </o-icon>
-                  {{ $msToText(props.row.MsPlayed) }}
-                </span>
-              </span>
-            </o-table-column>
-          </o-table>
-
-          <o-pagination
-            v-model:current="albumStatsPageNumber"
-            :total="albumStats!.length"
-            :per-page="entriesPerPage"
-            order="centered"
-            :range-before="2"
-            :range-after="2"
-          >
-          </o-pagination>
-        </o-tab-item>
-      </o-tabs>
+              <o-pagination
+                v-model:current="albumStatsPageNumber"
+                :total="albumStats!.length"
+                :per-page="entriesPerPage"
+                order="centered"
+                :range-before="2"
+                :range-after="2"
+              >
+              </o-pagination>
+            </o-tab-item>
+          </o-tabs>
+        </div>
+      </div>
     </section>
   </span>
 </template>
@@ -316,5 +355,10 @@ const loadFile = async (file: File) => {
 
 .tag:not(body) .icon:first-child:last-child {
   margin-right: 0.1em;
+}
+
+.tab-content:has(> .tab-item) {
+  padding-left: 0px;
+  padding-right: 0px;
 }
 </style>
