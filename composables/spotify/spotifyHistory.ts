@@ -76,7 +76,7 @@ export default class SpotifyHistory {
 
       const existingEntry = entriesByTrack.get(trackUri)
       existingEntry!.MsPlayed += entry.MsPlayed
-      existingEntry!.TimesPlayed += 1
+      existingEntry!.Count += 1
     })
 
     return Array.from(entriesByTrack.values()).sort(
@@ -108,7 +108,7 @@ export default class SpotifyHistory {
 
       const existingEntry = entriesByArtist.get(artistName)!
       existingEntry.MsPlayed += entry.MsPlayed
-      existingEntry.TimesPlayed += 1
+      existingEntry.Count += 1
       existingEntry.Tracks.set(entry.SpotifyTrackUri, entry.TrackName)
     })
 
@@ -135,12 +135,13 @@ export default class SpotifyHistory {
       if (!entriesByAlbum.has(albumName)) {
         entriesByAlbum.set(
           albumName,
-          new SpotifyHistoryAlbumStats(albumName, entry.AlbumArtistName, 0)
+          new SpotifyHistoryAlbumStats(albumName, entry.AlbumArtistName, 0, 0)
         )
       }
 
       const existingEntry = entriesByAlbum.get(albumName)!
       existingEntry.MsPlayed += entry.MsPlayed
+      existingEntry.Count += 1
       existingEntry.Tracks.set(entry.SpotifyTrackUri, entry.TrackName)
     })
 
