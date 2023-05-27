@@ -9,7 +9,12 @@
                 <o-icon icon="archive" size="large" class="mdi-48px"> </o-icon>
               </p>
               <p class="is-flex is-justify-content-center">
-                <span v-if="fileRef">fileRef.name</span>
+                <span v-if="fileRef && !isDataValid" class="has-text-danger">
+                  Data file {{ fileRef.name }} is invalid</span
+                >
+                <span v-if="fileRef && isDataValid">
+                  Loading data from {{ fileRef.name }}</span
+                >
                 <span v-if="!fileRef">Click to explore your Spotify data</span>
               </p>
             </o-upload>
@@ -320,6 +325,7 @@ const albumStats = ref<Array<SpotifyHistoryAlbumStats>>()
 const albumStatsPageNumber = ref(1)
 
 const isDataLoaded = ref<boolean>(false)
+const isDataValid = ref<boolean>(true)
 const activeTab = ref(1)
 const entriesPerPage = 25
 
@@ -370,8 +376,17 @@ watch(sortBy, () => {
 })
 
 const loadFile = async (file: File) => {
-  const reader = new SpotifyHistoryZipReader()
-  spotifyHistory.value = await reader.parseExtendedHistory(file)
+  isDataValid.value = true
+
+  try {
+    const reader = new SpotifyHistoryZipReader()
+    spotifyHistory.value = await reader.parseExtendedHistory(file)
+  } catch {
+    isDataValid.value = false
+    return
+  }
+
+  isDataValid.value = true
 
   dates.value = spotifyHistory.value.getDateRange()
   minDate.value = dates.value[0]
