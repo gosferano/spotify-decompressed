@@ -17,6 +17,7 @@ export default defineNuxtConfig({
     },
   },
   plugins: ['~/plugins/utils.ts'],
+  modules: ['@nuxtjs/color-mode'],
   ssr: false,
   css: [
     '@oruga-ui/oruga-next/src/scss/oruga-full-vars.scss',
@@ -26,5 +27,8 @@ export default defineNuxtConfig({
   typescript: {
     strict: true,
     shim: false,
+  },
+  colorMode: {
+    classSuffix: '',
   },
 })
