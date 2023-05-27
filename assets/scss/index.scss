@@ -6,6 +6,11 @@ $link: $spotify-green;
 @import 'bulma/bulma';
 @import '@oruga-ui/theme-bulma/dist/scss/bulma';
 
+#main-content {
+  min-height: 50vh;
+  display: block;
+}
+
 .upload-draggable.is-hovered {
   border-color: $spotify-green;
   color: $spotify-green;
@@ -16,6 +21,13 @@ $link: $spotify-green;
   background-color: $black;
 }
 
+.footer {
+  clear: both;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+
 html.dark {
   @include dark-theme-base;
   body,
@@ -23,7 +35,8 @@ html.dark {
     @include dark-theme-base;
   }
 
-  a:hover {
+  a:hover,
+  strong {
     color: $grey-lighter;
   }
 
@@ -33,6 +46,11 @@ html.dark {
     background-color: $black;
     border-color: $grey-darker;
     box-shadow: 0 0.5em 1em -0.125em $grey, 0 0px 0 1px $grey-lighter;
+  }
+
+  // Footer
+  .footer {
+    background-color: $black-bis;
   }
 
   // Table
