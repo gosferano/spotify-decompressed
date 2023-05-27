@@ -5,25 +5,36 @@ import SpotifyHistoryGlobalStats from './spotifyHistoryGlobalStats'
 import SpotifyHistoryTrackStats from './spotifyHistoryTrackStats'
 
 export default class SpotifyHistory {
-  Entries: SpotifyHistoryEntry[]
+  readonly Entries: SpotifyHistoryEntry[]
+  readonly DateFrom: Date
+  readonly DateTo: Date
 
   constructor(entries: Array<SpotifyHistoryEntry>) {
     this.Entries = entries
+    const dates = this.getDateRange()
+    this.DateFrom = dates[0]
+    this.DateTo = dates[1]
   }
 
-  getGlobalStats(): SpotifyHistoryGlobalStats {
+  getGlobalStats(from: Date, to: Date): SpotifyHistoryGlobalStats {
     let msPlayed = 0
-    const timesPlayed = this.Entries.length
+    let timesPlayed = 0
     const tracks = new Map()
     const artists = new Map()
     const albums = new Map()
+    // const musicDates = new Set<number>()
 
     this.Entries.forEach((entry) => {
+      if (entry.Timestamp < from || entry.Timestamp > to) {
+        return
+      }
+
       msPlayed += entry.MsPlayed
       if (entry.SpotifyTrackUri) {
         tracks.set(entry.SpotifyTrackUri, 0)
         artists.set(entry.AlbumArtistName, 0)
         albums.set(entry.AlbumName, 0)
+        timesPlayed += 1
       }
     })
 
@@ -36,15 +47,18 @@ export default class SpotifyHistory {
     )
   }
 
-  getTrackStats(): Array<SpotifyHistoryTrackStats> {
+  getTrackStats(from: Date, to: Date): Array<SpotifyHistoryTrackStats> {
     const entriesByTrack: Map<string, SpotifyHistoryTrackStats> = new Map<
       string,
       SpotifyHistoryTrackStats
     >()
 
     this.Entries.forEach((entry) => {
-      const trackUri: string = entry.SpotifyTrackUri
+      if (entry.Timestamp < from || entry.Timestamp > to) {
+        return
+      }
 
+      const trackUri: string = entry.SpotifyTrackUri
       if (!trackUri) return
 
       if (!entriesByTrack.has(trackUri)) {
@@ -70,13 +84,17 @@ export default class SpotifyHistory {
     )
   }
 
-  getArtistStats(): Array<SpotifyHistoryArtistStats> {
+  getArtistStats(from: Date, to: Date): Array<SpotifyHistoryArtistStats> {
     const entriesByArtist: Map<string, SpotifyHistoryArtistStats> = new Map<
       string,
       SpotifyHistoryArtistStats
     >()
 
     this.Entries.forEach((entry) => {
+      if (entry.Timestamp < from || entry.Timestamp > to) {
+        return
+      }
+
       const artistName: string = entry.AlbumArtistName
 
       if (!artistName) return
@@ -99,13 +117,17 @@ export default class SpotifyHistory {
     )
   }
 
-  getAlbumStats(): Array<SpotifyHistoryAlbumStats> {
+  getAlbumStats(from: Date, to: Date): Array<SpotifyHistoryAlbumStats> {
     const entriesByAlbum: Map<string, SpotifyHistoryAlbumStats> = new Map<
       string,
       SpotifyHistoryAlbumStats
     >()
 
     this.Entries.forEach((entry) => {
+      if (entry.Timestamp < from || entry.Timestamp > to) {
+        return
+      }
+
       const albumName: string = entry.AlbumName
 
       if (!albumName) return

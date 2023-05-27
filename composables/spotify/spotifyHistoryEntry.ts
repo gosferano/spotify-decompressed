@@ -9,7 +9,7 @@ export default class SpotifyHistoryEntry {
   TrackName: string
   MsPlayed: number
   IsOffline: any
-  OfflineTimestamp: any
+  OfflineTimestamp: number
   Platform: any
   ReasonEnd: any
   ReasonStart: string
@@ -17,7 +17,7 @@ export default class SpotifyHistoryEntry {
   IsSkipped: boolean
   SpotifyEpisodeUri: string
   SpotifyTrackUri: string
-  Timestamp: number
+  Timestamp: Date
   UserAgent: string
   Username: string
 
@@ -62,7 +62,7 @@ export default class SpotifyHistoryEntry {
     this.IsSkipped = value.skipped
     this.SpotifyEpisodeUri = value.spotify_episode_uri
     this.SpotifyTrackUri = value.spotify_track_uri
-    this.Timestamp = value.ts
+    this.Timestamp = new Date(value.ts)
     this.UserAgent = value.user_agent_decrypted
     this.Username = value.username
   }
