@@ -2,35 +2,9 @@
   <section v-if="!isDataLoaded" class="section">
     <div class="columns">
       <div class="column is-half-desktop is-offset-one-quarter-desktop">
-        <o-field class="file">
-          <o-upload
-            v-model="fileRef"
-            expanded
-            drag-drop
-            accept="multipart/x-zip,application/zip,application/zip-compressed,application/x-zip-compressed"
-          >
-            <p class="is-flex is-justify-content-center">
-              <o-icon icon="archive" size="large" class="mdi-48px"> </o-icon>
-            </p>
-            <p class="is-flex is-justify-content-center">
-              <span v-if="fileRef && !isDataValid" class="has-text-danger">
-                Data file {{ fileRef.name }} is invalid</span
-              >
-              <span v-if="fileRef && isDataValid">
-                Loading data from {{ fileRef.name }}</span
-              >
-              <span v-if="!fileRef">Click to explore your Spotify data</span>
-            </p>
-          </o-upload>
-        </o-field>
-        <span class="is-size-7">
-          Spotify extended history file can be requested from your
-          <NuxtLink
-            to="https://www.spotify.com/lt-lt/account/privacy/"
-            target="blank"
-            >Spotify account page</NuxtLink
-          >
-        </span>
+        <SpotifyDataLoader
+          @update:spotify-history="receiveSpotifyHistory"
+        ></SpotifyDataLoader>
       </div>
       <div v-if="false" class="column">
         <o-button
@@ -300,12 +274,10 @@ import SpotifyHistoryAlbumStats from '~/composables/spotify/spotifyHistoryAlbumS
 import SpotifyHistoryArtistStats from '~/composables/spotify/spotifyHistoryArtistStats'
 import SpotifyHistoryGlobalStats from '~/composables/spotify/spotifyHistoryGlobalStats'
 import SpotifyHistoryTrackStats from '~/composables/spotify/spotifyHistoryTrackStats'
-import SpotifyHistoryZipReader from '~/composables/spotify/spotifyHistoryZipReader'
 
 const dates = ref<[Date, Date]>()
 const minDate = ref<Date>()
 const maxDate = ref<Date>()
-const fileRef = ref<File>()
 const sortBy = ref<'count' | 'duration'>('duration')
 
 const spotifyHistory = ref<SpotifyHistory>()
@@ -324,7 +296,6 @@ const albumStats = ref<Array<SpotifyHistoryAlbumStats>>()
 const albumStatsPageNumber = ref(1)
 
 const isDataLoaded = ref<boolean>(false)
-const isDataValid = ref<boolean>(true)
 const activeTab = ref(1)
 const entriesPerPage = 25
 
@@ -356,43 +327,29 @@ const toTrackWebUrl = (spotifyTrackUri: string) => {
   }`
 }
 
-watch(fileRef, () => {
-  if (fileRef.value) {
-    loadFile(fileRef.value)
-  }
-})
-
 watch(dates, () => {
-  if (dates.value) {
-    loadStats(dates.value![0], dates.value![1])
+  if (dates.value && isDataLoaded) {
+    loadStats()
   }
 })
 
 watch(sortBy, () => {
-  if (dates.value) {
-    loadStats(dates.value![0], dates.value![1])
+  if (dates.value && isDataLoaded) {
+    loadStats()
   }
 })
 
-const loadFile = async (file: File) => {
-  isDataValid.value = true
-
-  try {
-    const reader = new SpotifyHistoryZipReader()
-    spotifyHistory.value = await reader.parseExtendedHistory(file)
-  } catch {
-    isDataValid.value = false
-    return
-  }
-
-  isDataValid.value = true
-
+const receiveSpotifyHistory = (value: SpotifyHistory) => {
+  spotifyHistory.value = value
   dates.value = spotifyHistory.value.getDateRange()
   minDate.value = dates.value[0]
   maxDate.value = dates.value[1]
+  loadStats()
 }
 
-const loadStats = (from: Date, to: Date) => {
+const loadStats = () => {
+  const from = dates.value![0]
+  const to = dates.value![1]
   globalStats.value = spotifyHistory.value!.getGlobalStats(from, to)
   artistStats.value = spotifyHistory.value!.getArtistStats(
     from,
