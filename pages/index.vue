@@ -47,7 +47,9 @@
               v-model="dates"
               placeholder="Select date range"
               range
-              disabled
+              :disabled="!dates"
+              :min-date="minDate"
+              :max-date="maxDate"
             >
             </o-datepicker>
           </o-field>
@@ -273,6 +275,7 @@
 
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue'
+import SpotifyHistory from '~/composables/spotify/spotifyHistory'
 import SpotifyHistoryAlbumStats from '~/composables/spotify/spotifyHistoryAlbumStats'
 import SpotifyHistoryArtistStats from '~/composables/spotify/spotifyHistoryArtistStats'
 import SpotifyHistoryGlobalStats from '~/composables/spotify/spotifyHistoryGlobalStats'
@@ -280,10 +283,16 @@ import SpotifyHistoryTrackStats from '~/composables/spotify/spotifyHistoryTrackS
 import SpotifyHistoryZipReader from '~/composables/spotify/spotifyHistoryZipReader'
 
 const dates = ref<[Date, Date]>()
+const minDate = ref<Date>()
+const maxDate = ref<Date>()
 const fileRef = ref<File>()
+
+const spotifyHistory = ref<SpotifyHistory>()
+
 const globalStats = ref<SpotifyHistoryGlobalStats>(
   new SpotifyHistoryGlobalStats()
 )
+
 const artistStats = ref<Array<SpotifyHistoryArtistStats>>()
 const artistStatsPageNumber = ref(1)
 
@@ -331,15 +340,26 @@ watch(fileRef, () => {
   }
 })
 
+watch(dates, () => {
+  if (dates.value) {
+    loadStats(dates.value![0], dates.value![1])
+  }
+})
+
 const loadFile = async (file: File) => {
   const reader = new SpotifyHistoryZipReader()
-  const spotifyHistory = await reader.parseExtendedHistory(file)
+  spotifyHistory.value = await reader.parseExtendedHistory(file)
 
-  dates.value = spotifyHistory.getDateRange()
-  globalStats.value = spotifyHistory.getGlobalStats()
-  artistStats.value = spotifyHistory.getArtistStats()
-  trackStats.value = spotifyHistory.getTrackStats()
-  albumStats.value = spotifyHistory.getAlbumStats()
+  dates.value = spotifyHistory.value.getDateRange()
+  minDate.value = dates.value[0]
+  maxDate.value = dates.value[1]
+}
+
+const loadStats = (from: Date, to: Date) => {
+  globalStats.value = spotifyHistory.value!.getGlobalStats(from, to)
+  artistStats.value = spotifyHistory.value!.getArtistStats(from, to)
+  trackStats.value = spotifyHistory.value!.getTrackStats(from, to)
+  albumStats.value = spotifyHistory.value!.getAlbumStats(from, to)
   isDataLoaded.value = true
 }
 </script>
