@@ -41,17 +41,30 @@
         <div
           class="column is-8-fullhd is-offset-2-fullhd is-10-widescreen is-offset-1-widescreen"
         >
-          <o-field class="is-fullwidth" label="Date range">
-            <o-datepicker
-              v-model="dates"
-              placeholder="Select date range"
-              range
-              :disabled="!dates"
-              :min-date="minDate"
-              :max-date="maxDate"
-            >
-            </o-datepicker>
-          </o-field>
+          <div class="columns">
+            <div class="column is-10">
+              <o-field label="Date range">
+                <o-datepicker
+                  v-model="dates"
+                  expanded
+                  placeholder="Select date range"
+                  range
+                  :disabled="!dates"
+                  :min-date="minDate"
+                  :max-date="maxDate"
+                >
+                </o-datepicker>
+              </o-field>
+            </div>
+            <div class="column is-2">
+              <o-field label="Sort by">
+                <o-select v-model="sortBy" expanded>
+                  <option value="count">Count</option>
+                  <option value="duration">Duration</option>
+                </o-select>
+              </o-field>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -146,7 +159,7 @@
                   <span class="is-pulled-right">
                     <span class="tag is-dark">
                       <o-icon icon="repeat" size="small"> </o-icon>
-                      {{ props.row.TimesPlayed }}
+                      {{ props.row.Count }}
                     </span>
                     <span class="tag is-dark">
                       <o-icon icon="timer" size="small"> </o-icon>
@@ -196,7 +209,7 @@
                     </span>
                     <span class="tag is-dark">
                       <o-icon icon="repeat" size="small"> </o-icon>
-                      {{ props.row.TimesPlayed }}
+                      {{ props.row.Count }}
                     </span>
                     <span class="tag is-dark">
                       <o-icon icon="timer" size="small"> </o-icon>
@@ -248,6 +261,10 @@
                       {{ props.row.Tracks.size }}
                     </span>
                     <span class="tag is-dark">
+                      <o-icon icon="repeat" size="small"> </o-icon>
+                      {{ props.row.Count }}
+                    </span>
+                    <span class="tag is-dark">
                       <o-icon icon="timer" size="small"> </o-icon>
                       {{ $msToText(props.row.MsPlayed) }}
                     </span>
@@ -285,6 +302,7 @@ const dates = ref<[Date, Date]>()
 const minDate = ref<Date>()
 const maxDate = ref<Date>()
 const fileRef = ref<File>()
+const sortBy = ref<'count' | 'duration'>('duration')
 
 const spotifyHistory = ref<SpotifyHistory>()
 
@@ -345,6 +363,12 @@ watch(dates, () => {
   }
 })
 
+watch(sortBy, () => {
+  if (dates.value) {
+    loadStats(dates.value![0], dates.value![1])
+  }
+})
+
 const loadFile = async (file: File) => {
   const reader = new SpotifyHistoryZipReader()
   spotifyHistory.value = await reader.parseExtendedHistory(file)
@@ -356,9 +380,13 @@ const loadFile = async (file: File) => {
 
 const loadStats = (from: Date, to: Date) => {
   globalStats.value = spotifyHistory.value!.getGlobalStats(from, to)
-  artistStats.value = spotifyHistory.value!.getArtistStats(from, to)
-  trackStats.value = spotifyHistory.value!.getTrackStats(from, to)
-  albumStats.value = spotifyHistory.value!.getAlbumStats(from, to)
+  artistStats.value = spotifyHistory.value!.getArtistStats(
+    from,
+    to,
+    sortBy.value
+  )
+  trackStats.value = spotifyHistory.value!.getTrackStats(from, to, sortBy.value)
+  albumStats.value = spotifyHistory.value!.getAlbumStats(from, to, sortBy.value)
   isDataLoaded.value = true
 }
 </script>

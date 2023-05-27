@@ -47,7 +47,11 @@ export default class SpotifyHistory {
     )
   }
 
-  getTrackStats(from: Date, to: Date): Array<SpotifyHistoryTrackStats> {
+  getTrackStats(
+    from: Date,
+    to: Date,
+    sortBy: 'count' | 'duration'
+  ): Array<SpotifyHistoryTrackStats> {
     const entriesByTrack: Map<string, SpotifyHistoryTrackStats> = new Map<
       string,
       SpotifyHistoryTrackStats
@@ -79,12 +83,18 @@ export default class SpotifyHistory {
       existingEntry!.Count += 1
     })
 
-    return Array.from(entriesByTrack.values()).sort(
-      (a, b) => -a.MsPlayed + b.MsPlayed
-    )
+    return sortBy === 'count'
+      ? Array.from(entriesByTrack.values()).sort((a, b) => -a.Count + b.Count)
+      : Array.from(entriesByTrack.values()).sort(
+          (a, b) => -a.MsPlayed + b.MsPlayed
+        )
   }
 
-  getArtistStats(from: Date, to: Date): Array<SpotifyHistoryArtistStats> {
+  getArtistStats(
+    from: Date,
+    to: Date,
+    sortBy: 'count' | 'duration'
+  ): Array<SpotifyHistoryArtistStats> {
     const entriesByArtist: Map<string, SpotifyHistoryArtistStats> = new Map<
       string,
       SpotifyHistoryArtistStats
@@ -112,12 +122,18 @@ export default class SpotifyHistory {
       existingEntry.Tracks.set(entry.SpotifyTrackUri, entry.TrackName)
     })
 
-    return Array.from(entriesByArtist.values()).sort(
-      (a, b) => -a.MsPlayed + b.MsPlayed
-    )
+    return sortBy === 'count'
+      ? Array.from(entriesByArtist.values()).sort((a, b) => -a.Count + b.Count)
+      : Array.from(entriesByArtist.values()).sort(
+          (a, b) => -a.MsPlayed + b.MsPlayed
+        )
   }
 
-  getAlbumStats(from: Date, to: Date): Array<SpotifyHistoryAlbumStats> {
+  getAlbumStats(
+    from: Date,
+    to: Date,
+    sortBy: 'count' | 'duration'
+  ): Array<SpotifyHistoryAlbumStats> {
     const entriesByAlbum: Map<string, SpotifyHistoryAlbumStats> = new Map<
       string,
       SpotifyHistoryAlbumStats
@@ -145,9 +161,11 @@ export default class SpotifyHistory {
       existingEntry.Tracks.set(entry.SpotifyTrackUri, entry.TrackName)
     })
 
-    return Array.from(entriesByAlbum.values()).sort(
-      (a, b) => -a.MsPlayed + b.MsPlayed
-    )
+    return sortBy === 'count'
+      ? Array.from(entriesByAlbum.values()).sort((a, b) => -a.Count + b.Count)
+      : Array.from(entriesByAlbum.values()).sort(
+          (a, b) => -a.MsPlayed + b.MsPlayed
+        )
   }
 
   getDateRange(): [Date, Date] {
