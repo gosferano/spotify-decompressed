@@ -13,7 +13,7 @@ export default defineNuxtConfig({
           content: 'Spotify extended history viewer',
         },
       ],
-      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+      link: [{ rel: 'icon', type: 'image/x-icon', href: 'favicon.ico' }],
     },
   },
   plugins: ['~/plugins/utils.ts'],
