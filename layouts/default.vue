@@ -22,7 +22,27 @@
         </o-field>
       </level>
     </nav>
-    <slot />
+
+    <span id="main-content">
+      <slot />
+    </span>
+
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p>
+          <strong>Spotify Decompressed</strong> by
+          <NuxtLink to="https://github.com/gosferano">gosferano</NuxtLink>
+        </p>
+        <p>
+          <NuxtLink
+            to="https://github.com/gosferano/spotify-decompressed"
+            target="blank"
+          >
+            <o-icon icon="github"> </o-icon>
+          </NuxtLink>
+        </p>
+      </div>
+    </footer>
   </span>
 </template>
 
