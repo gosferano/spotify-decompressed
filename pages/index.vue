@@ -8,7 +8,7 @@
               v-model="fileRef"
               expanded
               drag-drop
-              accept="application/zip"
+              accept="multipart/x-zip,application/zip,application/zip-compressed,application/x-zip-compressed"
             >
               <p class="is-flex is-justify-content-center">
                 <o-icon icon="archive" size="large" class="mdi-48px"> </o-icon>
