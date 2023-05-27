@@ -1,12 +1,12 @@
 export default class SpotifyHistoryArtistStats {
   Name: string
-  TimesPlayed: number
+  Count: number
   MsPlayed: number
   Tracks: Map<string, string>
 
-  constructor(name: string, timesPlayed: number, msPlayed: number) {
+  constructor(name: string, count: number, msPlayed: number) {
     this.Name = name
-    this.TimesPlayed = timesPlayed
+    this.Count = count
     this.MsPlayed = msPlayed
     this.Tracks = new Map<string, string>()
   }
