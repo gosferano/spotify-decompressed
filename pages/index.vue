@@ -4,7 +4,12 @@
       <div class="columns">
         <div class="column is-half-desktop is-offset-one-quarter-desktop">
           <o-field class="file">
-            <o-upload v-model="fileRef" expanded drag-drop>
+            <o-upload
+              v-model="fileRef"
+              expanded
+              drag-drop
+              accept="application/zip"
+            >
               <p class="is-flex is-justify-content-center">
                 <o-icon icon="archive" size="large" class="mdi-48px"> </o-icon>
               </p>
