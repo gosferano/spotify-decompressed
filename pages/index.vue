@@ -9,9 +9,8 @@
                 <o-icon icon="archive" size="large" class="mdi-48px"> </o-icon>
               </p>
               <p class="is-flex is-justify-content-center">
-                <span>{{
-                  fileRef?.name || 'Click to upload Spotify data'
-                }}</span>
+                <span v-if="fileRef">fileRef.name</span>
+                <span v-if="!fileRef">Click to explore your Spotify data</span>
               </p>
             </o-upload>
           </o-field>
