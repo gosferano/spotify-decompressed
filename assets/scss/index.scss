@@ -10,3 +10,75 @@ $link: $spotify-green;
   border-color: $spotify-green;
   color: $spotify-green;
 }
+
+@mixin dark-theme-base {
+  color: $grey-light;
+  background-color: $black;
+}
+
+html.dark {
+  @include dark-theme-base;
+  body,
+  table {
+    @include dark-theme-base;
+  }
+
+  a:hover {
+    color: $grey-lighter;
+  }
+
+  // Datepicker
+
+  .datepicker .dropdown-menu {
+    background-color: $black;
+    border-color: $grey-darker;
+    box-shadow: 0 0.5em 1em -0.125em $grey, 0 0px 0 1px $grey-lighter;
+  }
+
+  // Table
+  .table.is-striped {
+    tbody tr:not(.is-selected):nth-child(even) {
+      background-color: $black-bis;
+    }
+  }
+
+  .table {
+    thead td,
+    thead th {
+      color: $light;
+    }
+  }
+
+  // Tabs
+  .tabs {
+    a {
+      color: $grey-lighter;
+      border-bottom-color: $grey-darker;
+    }
+    a:hover {
+      border-bottom-color: $grey-lighter;
+    }
+  }
+
+  .b-tabs {
+    .tabs:not(.is-toggle),
+    .tabs:not(.is-toggle-rounded) {
+      border-bottom-color: $grey-darker;
+    }
+
+    .tabs div a.is-active {
+      border-bottom-color: $primary;
+    }
+  }
+
+  // Tag
+  .tag:not(body).is-dark {
+    color: $dark;
+    background-color: $light;
+  }
+
+  // Title
+  .title {
+    color: $grey-lighter;
+  }
+}
