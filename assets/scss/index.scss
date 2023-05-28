@@ -64,8 +64,8 @@ html.dark {
 
   // Table
   .table.is-striped {
-    tbody tr:not(.is-selected):nth-child(even) {
-      background-color: $black-bis;
+    tbody tr {
+      background-color: $black-bis !important;
     }
   }
 
