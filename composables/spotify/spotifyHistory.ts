@@ -90,6 +90,7 @@ export default class SpotifyHistory {
       const existingArtistEntry = entriesByArtist.get(artistName)!
       existingArtistEntry.MsPlayed += entry.MsPlayed
       existingArtistEntry.Count += 1
+      existingArtistEntry.Tracks.set(entry.SpotifyTrackUri, entry.TrackName)
 
       // Collect album stats
       if (!entriesByAlbum.has(albumName)) {
@@ -102,6 +103,7 @@ export default class SpotifyHistory {
       const existingAlbumEntry = entriesByAlbum.get(albumName)!
       existingAlbumEntry.MsPlayed += entry.MsPlayed
       existingAlbumEntry.Count += 1
+      existingAlbumEntry.Tracks.set(entry.SpotifyTrackUri, entry.TrackName)
     })
 
     const globalStats = new SpotifyHistoryGlobalStats(
