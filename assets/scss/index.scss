@@ -35,6 +35,7 @@ $link: $spotify-green;
 
 html.dark {
   @include dark-theme-base;
+
   body,
   table {
     @include dark-theme-base;
@@ -60,6 +61,11 @@ html.dark {
   // Navbar
   .navbar {
     background-color: $black-bis;
+  }
+
+  .navbar-item,
+  .navbar-link {
+    color: $light;
   }
 
   // Table
