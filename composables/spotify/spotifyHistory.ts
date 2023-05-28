@@ -18,68 +18,50 @@ export default class SpotifyHistory {
     this.DateTo = dates[1]
   }
 
-  getGlobalStats(
-    from: Date,
-    to: Date,
-    includeSkipped: boolean
-  ): SpotifyHistoryGlobalStats {
-    let msPlayed = 0
-    let timesPlayed = 0
-    const tracks = new Map()
-    const artists = new Map()
-    const albums = new Map()
-    // const musicDates = new Set<number>()
-
-    this.Entries.forEach((entry) => {
-      if (entry.Timestamp < from || entry.Timestamp > to) {
-        return
-      }
-
-      if (!includeSkipped && entry.ReasonEnd !== 'trackdone') {
-        return
-      }
-
-      msPlayed += entry.MsPlayed
-      if (entry.SpotifyTrackUri) {
-        tracks.set(entry.SpotifyTrackUri, 0)
-        artists.set(entry.AlbumArtistName, 0)
-        albums.set(entry.AlbumName, 0)
-        timesPlayed += 1
-      }
-    })
-
-    return new SpotifyHistoryGlobalStats(
-      msPlayed,
-      timesPlayed,
-      tracks.size,
-      artists.size,
-      albums.size
-    )
-  }
-
-  getTrackStats(
+  getStats(
     from: Date,
     to: Date,
     sortBy: 'count' | 'duration',
     includeSkipped: boolean
-  ): Array<SpotifyHistoryTrackStats> {
+  ) {
+    let totalMsStreamed = 0
+    let totalCountStreamed = 0
+
     const entriesByTrack: Map<string, SpotifyHistoryTrackStats> = new Map<
       string,
       SpotifyHistoryTrackStats
     >()
 
+    const entriesByArtist: Map<string, SpotifyHistoryArtistStats> = new Map<
+      string,
+      SpotifyHistoryArtistStats
+    >()
+
+    const entriesByAlbum: Map<string, SpotifyHistoryAlbumStats> = new Map<
+      string,
+      SpotifyHistoryAlbumStats
+    >()
+
     this.Entries.forEach((entry) => {
+      // Skip entries outside of the date range
       if (entry.Timestamp < from || entry.Timestamp > to) {
         return
       }
 
+      // Skip entries that were skipped if includeSkipped is false
       if (!includeSkipped && entry.ReasonEnd !== 'trackdone') {
         return
       }
 
       const trackUri: string = entry.SpotifyTrackUri
-      if (!trackUri) return
+      const artistName: string = entry.AlbumArtistName
+      const albumName: string = entry.AlbumName
+      if (!trackUri || !artistName || !albumName) return
 
+      totalMsStreamed += entry.MsPlayed
+      totalCountStreamed += 1
+
+      // Collect track stats
       if (!entriesByTrack.has(trackUri)) {
         entriesByTrack.set(
           trackUri,
@@ -93,42 +75,11 @@ export default class SpotifyHistory {
         )
       }
 
-      const existingEntry = entriesByTrack.get(trackUri)
-      existingEntry!.MsPlayed += entry.MsPlayed
-      existingEntry!.Count += 1
-    })
+      const existingTrackEntry = entriesByTrack.get(trackUri)!
+      existingTrackEntry.MsPlayed += entry.MsPlayed
+      existingTrackEntry.Count += 1
 
-    return sortBy === 'count'
-      ? Array.from(entriesByTrack.values()).sort((a, b) => -a.Count + b.Count)
-      : Array.from(entriesByTrack.values()).sort(
-          (a, b) => -a.MsPlayed + b.MsPlayed
-        )
-  }
-
-  getArtistStats(
-    from: Date,
-    to: Date,
-    sortBy: 'count' | 'duration',
-    includeSkipped: boolean
-  ): Array<SpotifyHistoryArtistStats> {
-    const entriesByArtist: Map<string, SpotifyHistoryArtistStats> = new Map<
-      string,
-      SpotifyHistoryArtistStats
-    >()
-
-    this.Entries.forEach((entry) => {
-      if (entry.Timestamp < from || entry.Timestamp > to) {
-        return
-      }
-
-      if (!includeSkipped && entry.ReasonEnd !== 'trackdone') {
-        return
-      }
-
-      const artistName: string = entry.AlbumArtistName
-
-      if (!artistName) return
-
+      // Collect artist stats
       if (!entriesByArtist.has(artistName)) {
         entriesByArtist.set(
           artistName,
@@ -136,43 +87,11 @@ export default class SpotifyHistory {
         )
       }
 
-      const existingEntry = entriesByArtist.get(artistName)!
-      existingEntry.MsPlayed += entry.MsPlayed
-      existingEntry.Count += 1
-      existingEntry.Tracks.set(entry.SpotifyTrackUri, entry.TrackName)
-    })
+      const existingArtistEntry = entriesByArtist.get(artistName)!
+      existingArtistEntry.MsPlayed += entry.MsPlayed
+      existingArtistEntry.Count += 1
 
-    return sortBy === 'count'
-      ? Array.from(entriesByArtist.values()).sort((a, b) => -a.Count + b.Count)
-      : Array.from(entriesByArtist.values()).sort(
-          (a, b) => -a.MsPlayed + b.MsPlayed
-        )
-  }
-
-  getAlbumStats(
-    from: Date,
-    to: Date,
-    sortBy: 'count' | 'duration',
-    includeSkipped: boolean
-  ): Array<SpotifyHistoryAlbumStats> {
-    const entriesByAlbum: Map<string, SpotifyHistoryAlbumStats> = new Map<
-      string,
-      SpotifyHistoryAlbumStats
-    >()
-
-    this.Entries.forEach((entry) => {
-      if (entry.Timestamp < from || entry.Timestamp > to) {
-        return
-      }
-
-      if (!includeSkipped && entry.ReasonEnd !== 'trackdone') {
-        return
-      }
-
-      const albumName: string = entry.AlbumName
-
-      if (!albumName) return
-
+      // Collect album stats
       if (!entriesByAlbum.has(albumName)) {
         entriesByAlbum.set(
           albumName,
@@ -180,17 +99,46 @@ export default class SpotifyHistory {
         )
       }
 
-      const existingEntry = entriesByAlbum.get(albumName)!
-      existingEntry.MsPlayed += entry.MsPlayed
-      existingEntry.Count += 1
-      existingEntry.Tracks.set(entry.SpotifyTrackUri, entry.TrackName)
+      const existingAlbumEntry = entriesByAlbum.get(albumName)!
+      existingAlbumEntry.MsPlayed += entry.MsPlayed
+      existingAlbumEntry.Count += 1
     })
 
-    return sortBy === 'count'
-      ? Array.from(entriesByAlbum.values()).sort((a, b) => -a.Count + b.Count)
-      : Array.from(entriesByAlbum.values()).sort(
-          (a, b) => -a.MsPlayed + b.MsPlayed
-        )
+    const globalStats = new SpotifyHistoryGlobalStats(
+      totalMsStreamed,
+      totalCountStreamed,
+      entriesByTrack.size,
+      entriesByArtist.size,
+      entriesByAlbum.size
+    )
+
+    return {
+      global: globalStats,
+      tracks:
+        sortBy === 'count'
+          ? Array.from(entriesByTrack.values()).sort(
+              (a, b) => -a.Count + b.Count
+            )
+          : Array.from(entriesByTrack.values()).sort(
+              (a, b) => -a.MsPlayed + b.MsPlayed
+            ),
+      artists:
+        sortBy === 'count'
+          ? Array.from(entriesByArtist.values()).sort(
+              (a, b) => -a.Count + b.Count
+            )
+          : Array.from(entriesByArtist.values()).sort(
+              (a, b) => -a.MsPlayed + b.MsPlayed
+            ),
+      albums:
+        sortBy === 'count'
+          ? Array.from(entriesByAlbum.values()).sort(
+              (a, b) => -a.Count + b.Count
+            )
+          : Array.from(entriesByAlbum.values()).sort(
+              (a, b) => -a.MsPlayed + b.MsPlayed
+            ),
+    }
   }
 
   getDateRange(): [Date, Date] {

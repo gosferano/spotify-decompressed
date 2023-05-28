@@ -366,31 +366,17 @@ const loadStats = (isFirstRun: Boolean) => {
     return
   }
 
-  const from = dates.value![0]
-  const to = dates.value![1]
-  globalStats.value = spotifyHistory.value!.getGlobalStats(
-    from,
-    to,
-    includeSkipped.value
-  )
-  artistStats.value = spotifyHistory.value!.getArtistStats(
-    from,
-    to,
+  const filteredStats = spotifyHistory.value!.getStats(
+    dates.value![0],
+    dates.value![1],
     sortBy.value,
     includeSkipped.value
   )
-  trackStats.value = spotifyHistory.value!.getTrackStats(
-    from,
-    to,
-    sortBy.value,
-    includeSkipped.value
-  )
-  albumStats.value = spotifyHistory.value!.getAlbumStats(
-    from,
-    to,
-    sortBy.value,
-    includeSkipped.value
-  )
+
+  globalStats.value = filteredStats.global
+  trackStats.value = filteredStats.tracks
+  artistStats.value = filteredStats.artists
+  albumStats.value = filteredStats.albums
   isDataLoaded.value = true
 }
 </script>
