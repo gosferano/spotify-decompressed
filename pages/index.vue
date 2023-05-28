@@ -120,15 +120,15 @@
                 label="Track"
                 class="is-clipped"
               >
-                <span>
-                  <NuxtLink
-                    :to="toTrackWebUrl(props.row.SpotifyTrackUri)"
-                    target="blank"
-                    >{{ props.row.TrackName }}
-                  </NuxtLink>
-                  <span class="has-text-grey">
-                    - {{ props.row.AlbumArtistName }}</span
-                  >
+                <NuxtLink
+                  :to="toTrackWebUrl(props.row.SpotifyTrackUri)"
+                  target="blank"
+                >
+                  <o-icon icon="spotify" size="small"> </o-icon>
+                </NuxtLink>
+                {{ props.row.TrackName }}
+                <span class="has-text-grey">
+                  - {{ props.row.AlbumArtistName }}
                 </span>
               </o-table-column>
               <o-table-column
