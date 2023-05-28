@@ -28,6 +28,11 @@ $link: $spotify-green;
   width: 100%;
 }
 
+// Navbar
+.navbar {
+  background-color: $white-bis;
+}
+
 html.dark {
   @include dark-theme-base;
   body,
@@ -41,7 +46,6 @@ html.dark {
   }
 
   // Datepicker
-
   .datepicker .dropdown-menu {
     background-color: $black;
     border-color: $grey-darker;
@@ -50,6 +54,11 @@ html.dark {
 
   // Footer
   .footer {
+    background-color: $black-bis;
+  }
+
+  // Navbar
+  .navbar {
     background-color: $black-bis;
   }
 
