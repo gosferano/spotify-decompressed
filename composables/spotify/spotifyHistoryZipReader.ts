@@ -22,6 +22,6 @@ export default class SpotifyHistoryZipReader {
     const historyEntryLists = await Promise.all(historyEntryListPromises)
     return historyEntryLists
       .flat()
-      .map((entry) => new SpotifyHistoryEntry(entry))
+      .map((entry) => SpotifyHistoryEntry.FromJson(entry))
   }
 }

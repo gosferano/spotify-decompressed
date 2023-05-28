@@ -21,7 +21,53 @@ export default class SpotifyHistoryEntry {
   UserAgent: string
   Username: string
 
-  constructor(value: {
+  constructor(
+    connectionCountry = '',
+    episodeName = '',
+    episodeShowName = '',
+    isIncognitoMode = false,
+    ipAddress = '',
+    albumName = '',
+    albumArtistName = '',
+    trackName = '',
+    msPlayed = 0,
+    isOffline = false,
+    offlineTimestamp = 0,
+    platform = '',
+    reasonEnd = '',
+    reasonStart = '',
+    isShuffle = false,
+    isSkipped = false,
+    spotifyEpisodeUri = '',
+    spotifyTrackUri = '',
+    timestamp: Date = new Date(),
+    userAgent = '',
+    username: string
+  ) {
+    this.ConnectionCountry = connectionCountry
+    this.EpisodeName = episodeName
+    this.EpisodeShowName = episodeShowName
+    this.IsIncognitoMode = isIncognitoMode
+    this.IpAddress = ipAddress
+    this.AlbumName = albumName
+    this.AlbumArtistName = albumArtistName
+    this.TrackName = trackName
+    this.MsPlayed = msPlayed
+    this.IsOffline = isOffline
+    this.OfflineTimestamp = offlineTimestamp
+    this.Platform = platform
+    this.ReasonEnd = reasonEnd
+    this.ReasonStart = reasonStart
+    this.IsShuffle = isShuffle
+    this.IsSkipped = isSkipped
+    this.SpotifyEpisodeUri = spotifyEpisodeUri
+    this.SpotifyTrackUri = spotifyTrackUri
+    this.Timestamp = timestamp
+    this.UserAgent = userAgent
+    this.Username = username
+  }
+
+  public static FromJson(value: {
     conn_country: string
     episode_name: string
     episode_show_name: string
@@ -44,26 +90,28 @@ export default class SpotifyHistoryEntry {
     user_agent_decrypted: string
     username: string
   }) {
-    this.ConnectionCountry = value.conn_country
-    this.EpisodeName = value.episode_name
-    this.EpisodeShowName = value.episode_show_name
-    this.IsIncognitoMode = value.incognito_mode
-    this.IpAddress = value.ip_addr_decrypted
-    this.AlbumName = value.master_metadata_album_album_name
-    this.AlbumArtistName = value.master_metadata_album_artist_name
-    this.TrackName = value.master_metadata_track_name
-    this.MsPlayed = value.ms_played
-    this.IsOffline = value.offline
-    this.OfflineTimestamp = value.offline_timestamp
-    this.Platform = value.platform
-    this.ReasonEnd = value.reason_end
-    this.ReasonStart = value.reason_start
-    this.IsShuffle = value.shuffle
-    this.IsSkipped = value.skipped
-    this.SpotifyEpisodeUri = value.spotify_episode_uri
-    this.SpotifyTrackUri = value.spotify_track_uri
-    this.Timestamp = new Date(value.ts)
-    this.UserAgent = value.user_agent_decrypted
-    this.Username = value.username
+    return new SpotifyHistoryEntry(
+      value.conn_country,
+      value.episode_name,
+      value.episode_show_name,
+      value.incognito_mode,
+      value.ip_addr_decrypted,
+      value.master_metadata_album_album_name,
+      value.master_metadata_album_artist_name,
+      value.master_metadata_track_name,
+      value.ms_played,
+      value.offline,
+      value.offline_timestamp,
+      value.platform,
+      value.reason_end,
+      value.reason_start,
+      value.shuffle,
+      value.skipped,
+      value.spotify_episode_uri,
+      value.spotify_track_uri,
+      new Date(value.ts),
+      value.user_agent_decrypted,
+      value.username
+    )
   }
 }
