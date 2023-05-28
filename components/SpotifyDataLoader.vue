@@ -59,9 +59,9 @@ async function loadSpotifyHistory(value: File) {
 }
 
 const spotifyHistoryStore = useSpotifyHistoryStore()
-const spotifyHistory = await spotifyHistoryStore.getHistory()
 
-onMounted(() => {
+onMounted(async () => {
+  const spotifyHistory = await spotifyHistoryStore.getHistory()
   if (spotifyHistory) {
     emit('update:spotifyHistory', spotifyHistory)
   }
