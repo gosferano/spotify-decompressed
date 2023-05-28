@@ -17,7 +17,7 @@ export default defineNuxtConfig({
     },
   },
   plugins: ['~/plugins/utils.ts'],
-  modules: ['@nuxtjs/color-mode'],
+  modules: ['@nuxtjs/color-mode', 'nuxt3-localforage'],
   ssr: false,
   css: [
     '@oruga-ui/oruga-next/src/scss/oruga-full-vars.scss',
@@ -30,5 +30,10 @@ export default defineNuxtConfig({
   },
   colorMode: {
     classSuffix: '',
+  },
+  vite: {
+    optimizeDeps: {
+      include: ['localforage'],
+    },
   },
 })

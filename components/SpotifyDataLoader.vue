@@ -28,6 +28,7 @@ import SpotifyHistoryZipReader from '~/composables/spotify/spotifyHistoryZipRead
 
 let isDataValid = true
 const fileRef = ref<File | null>(null)
+const spotifyHistoryZipKey = 'spotifyHistoryZip'
 
 const emit = defineEmits(['update:isDataValid', 'update:spotifyHistory'])
 
@@ -48,7 +49,15 @@ async function loadSpotifyHistory(value: File) {
     emit('update:isDataValid', false)
     return
   }
+  await localForage.setItem(spotifyHistoryZipKey, value)
   isDataValid = true
   emit('update:isDataValid', true)
+}
+
+const localForage = useLocalForage()
+const spotifyHistoryZip = await localForage.getItem(spotifyHistoryZipKey)
+
+if (spotifyHistoryZip) {
+  fileRef.value = spotifyHistoryZip as File
 }
 </script>
