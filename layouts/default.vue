@@ -6,11 +6,15 @@
       aria-label="main navigation"
     >
       <div class="navbar-brand">
-        <h1 class="level-item is-size-4 has-text-weight-semibold">
-          <span class="icon is-small"
-            ><i class="fas fa-image" aria-hidden="true"></i></span
-          >Spotify Decompressed
-        </h1>
+        <span class="navbar-item">
+          <h1 class="navbar-item has-text-weight-semibold">
+            Spotify Decompressed
+          </h1>
+          <span v-if="spotifyHistoryStore.spotifyHistory">
+            {{ spotifyHistoryStore.spotifyHistory.DateFrom.getFullYear() }} -
+            {{ spotifyHistoryStore.spotifyHistory.DateTo.getFullYear() }}</span
+          >
+        </span>
       </div>
     </nav>
 
@@ -47,5 +51,8 @@
 </template>
 
 <script setup lang="ts">
+import { useSpotifyHistoryStore } from '~/stores/spotifyHistoryStore'
+
 const colorMode = useColorMode()
+const spotifyHistoryStore = useSpotifyHistoryStore()
 </script>
