@@ -68,10 +68,19 @@ html.dark {
     color: $light;
   }
 
+  // Label
+  .label {
+    color: $grey-light;
+  }
+
   // Table
   .table.is-striped {
     tbody tr {
-      background-color: $black-bis !important;
+      background-color: $black-bis;
+    }
+
+    tbody tr:not(.is-selected):nth-child(even) {
+      background-color: $black;
     }
   }
 
@@ -88,6 +97,7 @@ html.dark {
       color: $grey-lighter;
       border-bottom-color: $grey-darker;
     }
+
     a:hover {
       border-bottom-color: $grey-lighter;
     }
