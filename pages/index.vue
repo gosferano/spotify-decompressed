@@ -24,8 +24,8 @@
       <div
         class="column is-8-fullhd is-offset-2-fullhd is-10-widescreen is-offset-1-widescreen"
       >
-        <div class="columns">
-          <div class="column is-10">
+        <div class="columns is-desktop">
+          <div class="column is-12-tablet is-6-desktop">
             <o-field label="Date range">
               <o-datepicker
                 v-model="dates"
@@ -39,13 +39,26 @@
               </o-datepicker>
             </o-field>
           </div>
-          <div class="column is-2">
-            <o-field label="Sort by">
-              <o-select v-model="sortBy" expanded>
-                <option value="count">Count</option>
-                <option value="duration">Duration</option>
-              </o-select>
-            </o-field>
+          <div class="column is-12-tablet is-6-desktop">
+            <div class="columns is-mobile">
+              <div class="column is-6-tablet">
+                <o-field label="Sort by">
+                  <o-select v-model="sortBy" expanded>
+                    <option value="count">Count</option>
+                    <option value="duration">Duration</option>
+                  </o-select>
+                </o-field>
+              </div>
+
+              <div class="column is-6-tablet">
+                <o-field label="Include skipped">
+                  <o-select v-model="includeSkipped" expanded>
+                    <option :value="true">Yes</option>
+                    <option :value="false">No</option>
+                  </o-select>
+                </o-field>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -279,6 +292,7 @@ const dates = ref<[Date, Date]>()
 const minDate = ref<Date>()
 const maxDate = ref<Date>()
 const sortBy = ref<'count' | 'duration'>('duration')
+const includeSkipped = ref<boolean>(false)
 
 const spotifyHistory = ref<SpotifyHistory>()
 
@@ -328,15 +342,15 @@ const toTrackWebUrl = (spotifyTrackUri: string) => {
 }
 
 watch(dates, () => {
-  if (dates.value && isDataLoaded) {
-    loadStats()
-  }
+  loadStats(false)
+})
+
+watch(includeSkipped, () => {
+  loadStats(false)
 })
 
 watch(sortBy, () => {
-  if (dates.value && isDataLoaded) {
-    loadStats()
-  }
+  loadStats(false)
 })
 
 const receiveSpotifyHistory = (value: SpotifyHistory) => {
@@ -344,20 +358,39 @@ const receiveSpotifyHistory = (value: SpotifyHistory) => {
   dates.value = spotifyHistory.value.getDateRange()
   minDate.value = dates.value[0]
   maxDate.value = dates.value[1]
-  loadStats()
+  loadStats(true)
 }
 
-const loadStats = () => {
+const loadStats = (isFirstRun: Boolean) => {
+  if (!isFirstRun && !isDataLoaded.value) {
+    return
+  }
+
   const from = dates.value![0]
   const to = dates.value![1]
-  globalStats.value = spotifyHistory.value!.getGlobalStats(from, to)
+  globalStats.value = spotifyHistory.value!.getGlobalStats(
+    from,
+    to,
+    includeSkipped.value
+  )
   artistStats.value = spotifyHistory.value!.getArtistStats(
     from,
     to,
-    sortBy.value
+    sortBy.value,
+    includeSkipped.value
   )
-  trackStats.value = spotifyHistory.value!.getTrackStats(from, to, sortBy.value)
-  albumStats.value = spotifyHistory.value!.getAlbumStats(from, to, sortBy.value)
+  trackStats.value = spotifyHistory.value!.getTrackStats(
+    from,
+    to,
+    sortBy.value,
+    includeSkipped.value
+  )
+  albumStats.value = spotifyHistory.value!.getAlbumStats(
+    from,
+    to,
+    sortBy.value,
+    includeSkipped.value
+  )
   isDataLoaded.value = true
 }
 </script>
