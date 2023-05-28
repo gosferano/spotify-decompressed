@@ -328,15 +328,12 @@ const toTrackWebUrl = (spotifyTrackUri: string) => {
 }
 
 watch(dates, () => {
-  if (dates.value && isDataLoaded) {
-    loadStats()
-  }
+  loadStats(false)
+})
 })
 
 watch(sortBy, () => {
-  if (dates.value && isDataLoaded) {
-    loadStats()
-  }
+  loadStats(false)
 })
 
 const receiveSpotifyHistory = (value: SpotifyHistory) => {
@@ -344,10 +341,14 @@ const receiveSpotifyHistory = (value: SpotifyHistory) => {
   dates.value = spotifyHistory.value.getDateRange()
   minDate.value = dates.value[0]
   maxDate.value = dates.value[1]
-  loadStats()
+  loadStats(true)
 }
 
-const loadStats = () => {
+const loadStats = (isFirstRun: Boolean) => {
+  if (!isFirstRun && !isDataLoaded.value) {
+    return
+  }
+
   const from = dates.value![0]
   const to = dates.value![1]
   globalStats.value = spotifyHistory.value!.getGlobalStats(from, to)
