@@ -1,26 +1,17 @@
 <template>
   <span>
     <nav
-      class="header is-vcentered"
+      class="navbar is-transparent"
       role="navigation"
       aria-label="main navigation"
     >
-      <level>
+      <div class="navbar-brand">
         <h1 class="level-item is-size-4 has-text-weight-semibold">
           <span class="icon is-small"
             ><i class="fas fa-image" aria-hidden="true"></i></span
           >Spotify Decompressed
         </h1>
-        <o-field class="level-item">
-          <o-switch
-            v-model="colorMode.preference"
-            true-value="dark"
-            false-value="light"
-          >
-            {{ colorMode.preference }}
-          </o-switch>
-        </o-field>
-      </level>
+      </div>
     </nav>
 
     <span id="main-content">
@@ -29,6 +20,15 @@
 
     <footer class="footer">
       <div class="content has-text-centered">
+        <o-field>
+          <o-switch
+            v-model="colorMode.preference"
+            true-value="dark"
+            false-value="light"
+          >
+            {{ colorMode.preference }}
+          </o-switch>
+        </o-field>
         <p>
           <strong>Spotify Decompressed</strong> by
           <NuxtLink to="https://github.com/gosferano">gosferano</NuxtLink>
