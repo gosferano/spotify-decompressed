@@ -18,7 +18,11 @@ export default class SpotifyHistory {
     this.DateTo = dates[1]
   }
 
-  getGlobalStats(from: Date, to: Date): SpotifyHistoryGlobalStats {
+  getGlobalStats(
+    from: Date,
+    to: Date,
+    includeSkipped: boolean
+  ): SpotifyHistoryGlobalStats {
     let msPlayed = 0
     let timesPlayed = 0
     const tracks = new Map()
@@ -28,6 +32,10 @@ export default class SpotifyHistory {
 
     this.Entries.forEach((entry) => {
       if (entry.Timestamp < from || entry.Timestamp > to) {
+        return
+      }
+
+      if (!includeSkipped && entry.ReasonEnd !== 'trackdone') {
         return
       }
 
@@ -52,7 +60,8 @@ export default class SpotifyHistory {
   getTrackStats(
     from: Date,
     to: Date,
-    sortBy: 'count' | 'duration'
+    sortBy: 'count' | 'duration',
+    includeSkipped: boolean
   ): Array<SpotifyHistoryTrackStats> {
     const entriesByTrack: Map<string, SpotifyHistoryTrackStats> = new Map<
       string,
@@ -61,6 +70,10 @@ export default class SpotifyHistory {
 
     this.Entries.forEach((entry) => {
       if (entry.Timestamp < from || entry.Timestamp > to) {
+        return
+      }
+
+      if (!includeSkipped && entry.ReasonEnd !== 'trackdone') {
         return
       }
 
@@ -95,7 +108,8 @@ export default class SpotifyHistory {
   getArtistStats(
     from: Date,
     to: Date,
-    sortBy: 'count' | 'duration'
+    sortBy: 'count' | 'duration',
+    includeSkipped: boolean
   ): Array<SpotifyHistoryArtistStats> {
     const entriesByArtist: Map<string, SpotifyHistoryArtistStats> = new Map<
       string,
@@ -104,6 +118,10 @@ export default class SpotifyHistory {
 
     this.Entries.forEach((entry) => {
       if (entry.Timestamp < from || entry.Timestamp > to) {
+        return
+      }
+
+      if (!includeSkipped && entry.ReasonEnd !== 'trackdone') {
         return
       }
 
@@ -134,7 +152,8 @@ export default class SpotifyHistory {
   getAlbumStats(
     from: Date,
     to: Date,
-    sortBy: 'count' | 'duration'
+    sortBy: 'count' | 'duration',
+    includeSkipped: boolean
   ): Array<SpotifyHistoryAlbumStats> {
     const entriesByAlbum: Map<string, SpotifyHistoryAlbumStats> = new Map<
       string,
@@ -143,6 +162,10 @@ export default class SpotifyHistory {
 
     this.Entries.forEach((entry) => {
       if (entry.Timestamp < from || entry.Timestamp > to) {
+        return
+      }
+
+      if (!includeSkipped && entry.ReasonEnd !== 'trackdone') {
         return
       }
 
