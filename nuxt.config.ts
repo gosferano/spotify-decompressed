@@ -16,8 +16,11 @@ export default defineNuxtConfig({
       link: [{ rel: 'icon', type: 'image/x-icon', href: 'favicon.ico' }],
     },
   },
-  plugins: ['~/plugins/utils.ts'],
-  modules: ['@nuxtjs/color-mode', 'nuxt3-localforage'],
+  alias: {
+    pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs',
+  },
+  plugins: ['~/plugins/pinia.ts', '~/plugins/utils.ts'],
+  modules: ['@nuxtjs/color-mode', '@pinia/nuxt', 'nuxt3-localforage'],
   ssr: false,
   css: [
     '@oruga-ui/oruga-next/src/scss/oruga-full-vars.scss',

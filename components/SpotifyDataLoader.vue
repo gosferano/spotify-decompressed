@@ -5,13 +5,16 @@
         <o-icon icon="archive" size="large" class="mdi-48px"> </o-icon>
       </p>
       <p class="is-flex is-justify-content-center">
-        <span v-if="fileRef && !isDataValid" class="has-text-danger">
+        <span v-if="isCheckingLocalStorage">
+          Checking local storage for Spotify data
+        </span>
+        <span v-else-if="fileRef && !isDataValid" class="has-text-danger">
           Data file {{ fileRef.name }} is invalid</span
         >
-        <span v-if="fileRef && isDataValid">
+        <span v-else-if="fileRef && isDataValid">
           Loading data from {{ fileRef.name }}</span
         >
-        <span v-if="!fileRef">Click to explore your Spotify data</span>
+        <span v-else>Click to explore your Spotify data</span>
       </p>
     </o-upload>
   </o-field>
@@ -25,10 +28,11 @@
 
 <script setup lang="ts">
 import SpotifyHistoryZipReader from '~/composables/spotify/spotifyHistoryZipReader'
+import { useSpotifyHistoryStore } from '~/stores/spotifyHistoryStore'
 
 let isDataValid = true
 const fileRef = ref<File | null>(null)
-const spotifyHistoryZipKey = 'spotifyHistoryZip'
+const isCheckingLocalStorage = ref<Boolean>(true)
 
 const emit = defineEmits(['update:isDataValid', 'update:spotifyHistory'])
 
@@ -43,21 +47,24 @@ async function loadSpotifyHistory(value: File) {
   try {
     const reader = new SpotifyHistoryZipReader()
     const spotifyHistory = await reader.parseExtendedHistory(value)
+    spotifyHistoryStore.setHistory(spotifyHistory)
     emit('update:spotifyHistory', spotifyHistory)
   } catch {
     isDataValid = false
     emit('update:isDataValid', false)
     return
   }
-  await localForage.setItem(spotifyHistoryZipKey, value)
   isDataValid = true
   emit('update:isDataValid', true)
 }
 
-const localForage = useLocalForage()
-const spotifyHistoryZip = await localForage.getItem(spotifyHistoryZipKey)
+const spotifyHistoryStore = useSpotifyHistoryStore()
+const spotifyHistory = await spotifyHistoryStore.getHistory()
 
-if (spotifyHistoryZip) {
-  fileRef.value = spotifyHistoryZip as File
-}
+onMounted(() => {
+  if (spotifyHistory) {
+    emit('update:spotifyHistory', spotifyHistory)
+  }
+  isCheckingLocalStorage.value = false
+})
 </script>
