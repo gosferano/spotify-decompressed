@@ -12,22 +12,6 @@
           >Spotify Decompressed
         </h1>
       </div>
-
-      <div class="navbar-end">
-        <div class="navbar-item">
-          <div class="buttons">
-            <o-field>
-              <o-switch
-                v-model="colorMode.preference"
-                true-value="dark"
-                false-value="light"
-              >
-                {{ colorMode.preference }}
-              </o-switch>
-            </o-field>
-          </div>
-        </div>
-      </div>
     </nav>
 
     <span id="main-content">
@@ -36,6 +20,15 @@
 
     <footer class="footer">
       <div class="content has-text-centered">
+        <o-field>
+          <o-switch
+            v-model="colorMode.preference"
+            true-value="dark"
+            false-value="light"
+          >
+            {{ colorMode.preference }}
+          </o-switch>
+        </o-field>
         <p>
           <strong>Spotify Decompressed</strong> by
           <NuxtLink to="https://github.com/gosferano">gosferano</NuxtLink>
