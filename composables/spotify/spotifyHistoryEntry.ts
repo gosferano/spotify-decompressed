@@ -1,71 +1,27 @@
 export default class SpotifyHistoryEntry {
-  ConnectionCountry: string
-  EpisodeName: string
-  EpisodeShowName: string
-  IsIncognitoMode: boolean
-  IpAddress: string
-  AlbumName: string
-  AlbumArtistName: string
-  TrackName: string
-  MsPlayed: number
-  IsOffline: any
-  OfflineTimestamp: number
-  Platform: any
-  ReasonEnd: any
-  ReasonStart: string
-  IsShuffle: boolean
-  IsSkipped: boolean
-  SpotifyEpisodeUri: string
-  SpotifyTrackUri: string
-  Timestamp: Date
-  UserAgent: string
-  Username: string
-
   constructor(
-    connectionCountry = '',
-    episodeName = '',
-    episodeShowName = '',
-    isIncognitoMode = false,
-    ipAddress = '',
-    albumName = '',
-    albumArtistName = '',
-    trackName = '',
-    msPlayed = 0,
-    isOffline = false,
-    offlineTimestamp = 0,
-    platform = '',
-    reasonEnd = '',
-    reasonStart = '',
-    isShuffle = false,
-    isSkipped = false,
-    spotifyEpisodeUri = '',
-    spotifyTrackUri = '',
-    timestamp: Date = new Date(),
-    userAgent = '',
-    username: string
-  ) {
-    this.ConnectionCountry = connectionCountry
-    this.EpisodeName = episodeName
-    this.EpisodeShowName = episodeShowName
-    this.IsIncognitoMode = isIncognitoMode
-    this.IpAddress = ipAddress
-    this.AlbumName = albumName
-    this.AlbumArtistName = albumArtistName
-    this.TrackName = trackName
-    this.MsPlayed = msPlayed
-    this.IsOffline = isOffline
-    this.OfflineTimestamp = offlineTimestamp
-    this.Platform = platform
-    this.ReasonEnd = reasonEnd
-    this.ReasonStart = reasonStart
-    this.IsShuffle = isShuffle
-    this.IsSkipped = isSkipped
-    this.SpotifyEpisodeUri = spotifyEpisodeUri
-    this.SpotifyTrackUri = spotifyTrackUri
-    this.Timestamp = timestamp
-    this.UserAgent = userAgent
-    this.Username = username
-  }
+    public readonly ConnectionCountry: string = '',
+    public readonly EpisodeName: string = '',
+    public readonly EpisodeShowName: string = '',
+    public readonly IsIncognitoMode: boolean = false,
+    public readonly IpAddress: string = '',
+    public readonly AlbumName: string = '',
+    public readonly AlbumArtistName: string = '',
+    public readonly TrackName: string = '',
+    public readonly MsPlayed: number = 0,
+    public readonly IsOffline: any = false,
+    public readonly OfflineTimestamp: number = 0,
+    public readonly Platform: any = '',
+    public readonly ReasonEnd: any = '',
+    public readonly ReasonStart: string = '',
+    public readonly IsShuffle: boolean = false,
+    public readonly IsSkipped: boolean = false,
+    public readonly SpotifyEpisodeUri: string = '',
+    public readonly SpotifyTrackUri: string = '',
+    public readonly Timestamp: Date = new Date(),
+    public readonly UserAgent: string = '',
+    public readonly Username: string = ''
+  ) {}
 
   public static FromJson(value: {
     conn_country: string
