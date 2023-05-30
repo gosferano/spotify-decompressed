@@ -74,7 +74,7 @@
               <div class="level-item has-text-centered">
                 <div>
                   <p class="heading">Duration played</p>
-                  <p class="title">{{ $msToText(globalStats.MsPlayed) }}</p>
+                  <p class="title">{{ $msToText(globalStats!.MsPlayed) }}</p>
                 </div>
               </div>
               <div class="level-item has-text-centered">
@@ -82,7 +82,9 @@
                   <p class="heading">Avg. time per track</p>
                   <p class="title">
                     {{
-                      $msToText(globalStats.MsPlayed / globalStats.TimesPlayed)
+                      $msToText(
+                        globalStats!.MsPlayed / globalStats!.TimesPlayed
+                      )
                     }}
                   </p>
                 </div>
@@ -90,7 +92,7 @@
               <div class="level-item has-text-centered">
                 <div>
                   <p class="heading">Times played</p>
-                  <p class="title">{{ globalStats.TimesPlayed }}</p>
+                  <p class="title">{{ globalStats!.TimesPlayed }}</p>
                 </div>
               </div>
             </nav>
@@ -98,19 +100,19 @@
               <div class="level-item has-text-centered">
                 <div>
                   <p class="heading">Tracks discovered</p>
-                  <p class="title">{{ globalStats.TotalTracks }}</p>
+                  <p class="title">{{ globalStats!.TotalTracks }}</p>
                 </div>
               </div>
               <div class="level-item has-text-centered">
                 <div>
                   <p class="heading">Artists discovered</p>
-                  <p class="title">{{ globalStats.TotalArtists }}</p>
+                  <p class="title">{{ globalStats!.TotalArtists }}</p>
                 </div>
               </div>
               <div class="level-item has-text-centered">
                 <div>
                   <p class="heading">Albums discovered</p>
-                  <p class="title">{{ globalStats.TotalAlbums }}</p>
+                  <p class="title">{{ globalStats!.TotalAlbums }}</p>
                 </div>
               </div>
             </nav>
@@ -296,9 +298,7 @@ const includeSkipped = ref<boolean>(false)
 
 const spotifyHistory = ref<SpotifyHistory>()
 
-const globalStats = ref<SpotifyHistoryGlobalStats>(
-  new SpotifyHistoryGlobalStats()
-)
+const globalStats = ref<SpotifyHistoryGlobalStats>()
 
 const artistStats = ref<Array<SpotifyHistoryArtistStats>>()
 const artistStatsPageNumber = ref(1)
@@ -314,22 +314,28 @@ const activeTab = ref(1)
 const entriesPerPage = 25
 
 const artistStatsCurrent = computed(() => {
+  if (!artistStats.value) {
+    return []
+  }
   return getPage(artistStats.value, artistStatsPageNumber.value, entriesPerPage)
 })
 
 const trackStatsCurrent = computed(() => {
+  if (!trackStats.value) {
+    return []
+  }
+
   return getPage(trackStats.value, trackStatsPageNumber.value, entriesPerPage)
 })
 
 const albumStatsCurrent = computed(() => {
+  if (!albumStats.value) {
+    return []
+  }
   return getPage(albumStats.value, albumStatsPageNumber.value, entriesPerPage)
 })
 
-const getPage = (
-  array: Array<any> | undefined,
-  page: number,
-  pageSize: number
-) => {
+const getPage = (array: Array<any>, page: number, pageSize: number) => {
   const start = pageSize * (page - 1)
   const end = start + pageSize
   return array?.slice(start, end)
@@ -341,16 +347,16 @@ const toTrackWebUrl = (spotifyTrackUri: string) => {
   }`
 }
 
-watch(dates, () => {
-  loadStats(false)
+watch(dates, async () => {
+  await loadStats(false)
 })
 
-watch(includeSkipped, () => {
-  loadStats(false)
+watch(includeSkipped, async () => {
+  await loadStats(false)
 })
 
-watch(sortBy, () => {
-  loadStats(false)
+watch(sortBy, async () => {
+  await loadStats(false)
 })
 
 const receiveSpotifyHistory = (value: SpotifyHistory) => {
