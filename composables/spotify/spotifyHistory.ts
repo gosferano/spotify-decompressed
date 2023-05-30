@@ -5,14 +5,12 @@ import SpotifyHistoryGlobalStats from './spotifyHistoryGlobalStats'
 import SpotifyHistoryTrackStats from './spotifyHistoryTrackStats'
 
 export default class SpotifyHistory {
-  Entries: SpotifyHistoryEntry[]
   readonly DateFrom: Date
   readonly DateTo: Date
 
   constructor(
-    entries: Array<SpotifyHistoryEntry> = new Array<SpotifyHistoryEntry>()
+    public readonly Entries: Array<SpotifyHistoryEntry> = new Array<SpotifyHistoryEntry>()
   ) {
-    this.Entries = entries
     const dates = this.getDateRange()
     this.DateFrom = dates[0]
     this.DateTo = dates[1]
