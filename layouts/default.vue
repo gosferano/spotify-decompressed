@@ -15,6 +15,54 @@
             {{ spotifyHistoryStore.spotifyHistory.DateTo.getFullYear() }}</span
           >
         </span>
+
+        <a
+          role="button"
+          class="navbar-burger"
+          aria-label="menu"
+          aria-expanded="false"
+          data-target="navbarButtons"
+          :class="{ 'is-active': showNav }"
+          @click="showNav = !showNav"
+        >
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+
+      <div
+        id="navbarButtons"
+        class="navbar-menu"
+        :class="{ 'is-active': showNav }"
+      >
+        <div class="navbar-end">
+          <div class="navbar-item">
+            <div class="buttons">
+              <o-button
+                v-if="
+                  spotifyHistoryStore.spotifyHistory &&
+                  !spotifyUserStore.isAuthorized
+                "
+                tag="a"
+                :href="spotifyUserStore.authorizeUrl"
+                target="blank"
+                icon-right="spotify"
+                class="is-primary"
+                disabled
+              >
+                Log in with
+              </o-button>
+              <o-button
+                v-if="spotifyUserStore.isAuthorized"
+                class="is-secondary"
+                @click="spotifyUserStore.clearToken"
+              >
+                Log out
+              </o-button>
+            </div>
+          </div>
+        </div>
       </div>
     </nav>
 
@@ -52,7 +100,10 @@
 
 <script setup lang="ts">
 import { useSpotifyHistoryStore } from '~/stores/spotifyHistoryStore'
+import { useSpotifyUserStore } from '~/stores/spotifyUserStore'
 
+const showNav = ref<Boolean>(false)
 const colorMode = useColorMode()
 const spotifyHistoryStore = useSpotifyHistoryStore()
+const spotifyUserStore = useSpotifyUserStore()
 </script>

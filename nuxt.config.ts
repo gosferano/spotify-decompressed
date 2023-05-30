@@ -19,7 +19,11 @@ export default defineNuxtConfig({
   alias: {
     pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs',
   },
-  plugins: ['~/plugins/pinia.ts', '~/plugins/utils.ts'],
+  plugins: [
+    // '~/plugins/spotifyHistoryStore.ts',
+    // '~/plugins/spotifyUserStore.ts',
+    '~/plugins/utils.ts',
+  ],
   modules: ['@nuxtjs/color-mode', '@pinia/nuxt', 'nuxt3-localforage'],
   ssr: false,
   css: [
