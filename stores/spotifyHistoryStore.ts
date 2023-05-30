@@ -3,7 +3,10 @@ import SpotifyHistory from '~/composables/spotify/spotifyHistory'
 
 export const useSpotifyHistoryStore = defineStore('spotifyHistoryStore', () => {
   const spotifyHistory = ref<SpotifyHistory | null>(null)
-  const localForage = useLocalForage()
+  const localForage = useLocalForage().createInstance({
+    name: 'spotify-decompressed',
+    storeName: 'spotifyExtendedHistory',
+  })
   const spotifyHistoryKey = 'spotifyHistory'
 
   const getHistoryFileFromLocalForage = async () => {
