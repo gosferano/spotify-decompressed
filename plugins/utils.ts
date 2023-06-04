@@ -17,10 +17,33 @@ export const isDevEnvironment = () => {
   return process.env.NODE_ENV === 'development'
 }
 
-export default defineNuxtPlugin((/* nuxtApp */) => {
+export const getPage = (array: Array<any>, page: number, pageSize: number) => {
+  const start = pageSize * (page - 1)
+  const end = start + pageSize
+  return array?.slice(start, end)
+}
+
+declare module '#app' {
+  interface NuxtApp {
+    $isDevEnvironment(): boolean
+    $getPage(array: Array<any>, page: number, pageSize: number): Array<any>
+    $msToText(ms: number, showDays?: boolean): string
+  }
+}
+
+declare module 'vue' {
+  interface ComponentCustomProperties {
+    $isDevEnvironment(): boolean
+    $getPage(array: Array<any>, page: number, pageSize: number): Array<any>
+    $msToText(ms: number, showDays?: boolean): string
+  }
+}
+
+export default defineNuxtPlugin(() => {
   return {
     provide: {
       isDevEnvironment,
+      getPage,
       msToText,
     },
   }

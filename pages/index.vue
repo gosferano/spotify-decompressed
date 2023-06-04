@@ -120,213 +120,37 @@
             </o-tab-item>
 
             <o-tab-item label="Top Tracks" class="toplist">
-              <o-table
-                :data="isDataLoaded ? trackStatsCurrent : []"
-                :narrowed="true"
-                :striped="true"
-              >
-                <o-table-column v-slot="props" field="index" label="#" numeric>
-                  {{
-                    (trackStatsPageNumber - 1) * entriesPerPage +
-                    props.index +
-                    1
-                  }}
-                </o-table-column>
-                <o-table-column
-                  v-slot="props"
-                  field="TrackName"
-                  label="Track"
-                  class="is-clipped"
-                >
-                  <NuxtLink
-                    :to="toTrackWebUrl(props.row.SpotifyTrackUri)"
-                    target="blank"
-                  >
-                    <o-icon icon="spotify" size="small"> </o-icon>
-                  </NuxtLink>
-                  {{ props.row.TrackName }}
-                  <span class="has-text-grey">
-                    - {{ props.row.ArtistName }}
-                  </span>
-                </o-table-column>
-                <o-table-column
-                  v-slot="props"
-                  field="numbers"
-                  position="right"
-                  label="Stats"
-                >
-                  <span class="is-pulled-right">
-                    <a v-if="$isDevEnvironment()">
-                      <o-icon
-                        type="a"
-                        icon="code-braces"
-                        size="small"
-                        @click="setActiveEntry(props.row)"
-                      >
-                      </o-icon>
-                    </a>
-                    <span class="tag is-dark">
-                      <o-icon icon="repeat" size="small"> </o-icon>
-                      {{ props.row.Count }}
-                    </span>
-                    <span class="tag is-dark">
-                      <o-icon icon="timer" size="small"> </o-icon>
-                      {{ $msToText(props.row.MsPlayed) }}
-                    </span>
-                  </span>
-                </o-table-column>
-              </o-table>
-
-              <o-pagination
-                v-model:current="trackStatsPageNumber"
-                :total="trackStats!.length"
-                :per-page="entriesPerPage"
-                order="centered"
-                :range-before="2"
-                :range-after="2"
-              >
-              </o-pagination>
+              <ToplistsTracksToplist
+                :entries-per-page="25"
+                :track-stats="trackStats ?? []"
+              />
             </o-tab-item>
 
             <o-tab-item label="Top Artists" class="toplist">
-              <o-table
-                :data="isDataLoaded ? artistStatsCurrent : []"
-                :narrowed="true"
-                :striped="true"
-              >
-                <o-table-column v-slot="props" field="index" label="#" numeric>
-                  {{
-                    (artistStatsPageNumber - 1) * entriesPerPage +
-                    props.index +
-                    1
-                  }}
-                </o-table-column>
-                <o-table-column v-slot="props" field="name" label="Artist">
-                  {{ props.row.ArtistName }}
-                </o-table-column>
-                <o-table-column
-                  v-slot="props"
-                  field="numbers"
-                  position="right"
-                  label="Stats"
-                >
-                  <span class="is-pulled-right">
-                    <a v-if="$isDevEnvironment()">
-                      <o-icon
-                        type="a"
-                        icon="code-braces"
-                        size="small"
-                        @click="setActiveEntry(props.row)"
-                      >
-                      </o-icon>
-                    </a>
-                    <span class="tag is-dark">
-                      <o-icon icon="music" size="small"> </o-icon>
-                      {{ props.row.Tracks.size }}
-                    </span>
-                    <span class="tag is-dark">
-                      <o-icon icon="repeat" size="small"> </o-icon>
-                      {{ props.row.Count }}
-                    </span>
-                    <span class="tag is-dark">
-                      <o-icon icon="timer" size="small"> </o-icon>
-                      {{ $msToText(props.row.MsPlayed) }}
-                    </span>
-                  </span>
-                </o-table-column>
-              </o-table>
-
-              <o-pagination
-                v-model:current="artistStatsPageNumber"
-                :total="artistStats!.length"
-                :per-page="entriesPerPage"
-                order="centered"
-                :range-before="2"
-                :range-after="2"
-              >
-              </o-pagination>
+              <ToplistsArtistsToplist
+                :entries-per-page="25"
+                :artist-stats="artistStats ?? []"
+              />
             </o-tab-item>
 
-            <o-tab-item label="Top Albums">
-              <o-table
-                :data="isDataLoaded ? albumStatsCurrent : []"
-                :narrowed="true"
-                :striped="true"
-              >
-                <o-table-column v-slot="props" field="index" numeric label="#">
-                  {{
-                    (albumStatsPageNumber - 1) * entriesPerPage +
-                    props.index +
-                    1
-                  }}
-                </o-table-column>
-                <o-table-column v-slot="props" field="name" label="Album">
-                  <span>
-                    {{ props.row.AlbumName }}
-                    <span class="has-text-grey"
-                      >- {{ props.row.ArtistName }}</span
-                    >
-                  </span>
-                </o-table-column>
-                <o-table-column
-                  v-slot="props"
-                  field="numbers"
-                  label="Stats"
-                  position="right"
-                >
-                  <span class="is-pulled-right">
-                    <a v-if="$isDevEnvironment()">
-                      <o-icon
-                        type="a"
-                        icon="code-braces"
-                        size="small"
-                        @click="setActiveEntry(props.row)"
-                      >
-                      </o-icon>
-                    </a>
-                    <span class="tag is-dark">
-                      <o-icon icon="music" size="small"> </o-icon>
-                      {{ props.row.Tracks.size }}
-                    </span>
-                    <span class="tag is-dark">
-                      <o-icon icon="repeat" size="small"> </o-icon>
-                      {{ props.row.Count }}
-                    </span>
-                    <span class="tag is-dark">
-                      <o-icon icon="timer" size="small"> </o-icon>
-                      {{ $msToText(props.row.MsPlayed) }}
-                    </span>
-                  </span>
-                </o-table-column>
-              </o-table>
-
-              <o-pagination
-                v-model:current="albumStatsPageNumber"
-                :total="albumStats!.length"
-                :per-page="entriesPerPage"
-                order="centered"
-                :range-before="2"
-                :range-after="2"
-              >
-              </o-pagination>
+            <o-tab-item label="Top Albums" class="toplist">
+              <ToplistsAlbumsToplist
+                :entries-per-page="25"
+                :album-stats="albumStats ?? []"
+              />
             </o-tab-item>
           </o-tabs>
         </div>
       </div>
     </div>
-
-    <o-modal v-model:active="activeEntry">
-      <EntriesDebugInfo v-model="activeEntry"></EntriesDebugInfo>
-    </o-modal>
   </section>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue'
+import { ref, watch } from 'vue'
 import SpotifyHistory from '~/utils/spotify/spotifyHistory'
 import SpotifyHistoryAlbumStats from '~/utils/spotify/spotifyHistoryAlbumStats'
 import SpotifyHistoryArtistStats from '~/utils/spotify/spotifyHistoryArtistStats'
-import SpotifyHistoryEntriesContainer from '~/utils/spotify/spotifyHistoryEntriesContainer'
 import SpotifyHistoryGlobalStats from '~/utils/spotify/spotifyHistoryGlobalStats'
 import SpotifyHistoryTrackStats from '~/utils/spotify/spotifyHistoryTrackStats'
 
@@ -337,59 +161,12 @@ const includeSkipped = ref<boolean>(false)
 const spotifyHistory = ref<SpotifyHistory>()
 
 const globalStats = ref<SpotifyHistoryGlobalStats>()
-
 const artistStats = ref<Array<SpotifyHistoryArtistStats>>()
-const artistStatsPageNumber = ref(1)
-
 const trackStats = ref<Array<SpotifyHistoryTrackStats>>()
-const trackStatsPageNumber = ref(1)
-
 const albumStats = ref<Array<SpotifyHistoryAlbumStats>>()
-const albumStatsPageNumber = ref(1)
 
 const isDataLoaded = ref<boolean>(false)
 const activeTab = ref(1)
-const entriesPerPage = 25
-
-const activeEntry = ref<SpotifyHistoryEntriesContainer>()
-
-const artistStatsCurrent = computed(() => {
-  if (!artistStats.value) {
-    return []
-  }
-  return getPage(artistStats.value, artistStatsPageNumber.value, entriesPerPage)
-})
-
-const trackStatsCurrent = computed(() => {
-  if (!trackStats.value) {
-    return []
-  }
-
-  return getPage(trackStats.value, trackStatsPageNumber.value, entriesPerPage)
-})
-
-const albumStatsCurrent = computed(() => {
-  if (!albumStats.value) {
-    return []
-  }
-  return getPage(albumStats.value, albumStatsPageNumber.value, entriesPerPage)
-})
-
-const getPage = (array: Array<any>, page: number, pageSize: number) => {
-  const start = pageSize * (page - 1)
-  const end = start + pageSize
-  return array?.slice(start, end)
-}
-
-const toTrackWebUrl = (spotifyTrackUri: string) => {
-  return `https://open.spotify.com/track/${
-    spotifyTrackUri.split(':').slice(-1)[0]
-  }`
-}
-
-const setActiveEntry = (entry: SpotifyHistoryEntriesContainer) => {
-  activeEntry.value = entry
-}
 
 watch(dates, () => {
   loadStats(false)
