@@ -27,7 +27,8 @@
 </template>
 
 <script setup lang="ts">
-import SpotifyHistoryZipReader from '~/composables/spotify/spotifyHistoryZipReader'
+import SpotifyHistory from '~/utils/spotify/spotifyHistory'
+import SpotifyHistoryZipReader from '~/utils/spotify/spotifyHistoryZipReader'
 import { useSpotifyHistoryStore } from '~/stores/spotifyHistoryStore'
 
 let isDataValid = true
@@ -60,11 +61,16 @@ async function loadSpotifyHistory(value: File) {
 
 const spotifyHistoryStore = useSpotifyHistoryStore()
 
-onMounted(async () => {
-  const spotifyHistory = await spotifyHistoryStore.getHistory()
-  if (spotifyHistory) {
-    emit('update:spotifyHistory', spotifyHistory)
-  }
-  isCheckingLocalStorage.value = false
+onMounted(() => {
+  spotifyHistoryStore
+    .getHistory()
+    .then((spotifyHistory: SpotifyHistory | null) => {
+      if (spotifyHistory) {
+        emit('update:spotifyHistory', spotifyHistory)
+      }
+    })
+    .finally(() => {
+      isCheckingLocalStorage.value = false
+    })
 })
 </script>

@@ -1,24 +1,30 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import SpotifyHistory from '~/composables/spotify/spotifyHistory'
+import SpotifyHistory from '~/utils/spotify/spotifyHistory'
+import SpotifyHistoryEntry from '~/utils/spotify/spotifyHistoryEntry'
 
 export const useSpotifyHistoryStore = defineStore('spotifyHistoryStore', () => {
   const spotifyHistory = ref<SpotifyHistory | null>(null)
-  const localForage = useLocalForage()
-  const spotifyHistoryKey = 'spotifyHistory'
+  const localForage = useLocalForage().createInstance({
+    name: 'spotify-decompressed',
+    storeName: 'spotifyExtendedHistory',
+  })
+  const spotifyHistoryEntriesKey = 'spotifyHistoryEntries'
 
   const getHistoryFileFromLocalForage = async () => {
-    const history = await localForage.getItem<SpotifyHistory>(spotifyHistoryKey)
+    const historyEntries = await localForage.getItem<SpotifyHistoryEntry[]>(
+      spotifyHistoryEntriesKey
+    )
 
-    if (!history) {
+    if (!historyEntries) {
       return null
     }
 
-    return new SpotifyHistory(history.Entries)
+    return new SpotifyHistory(historyEntries)
   }
 
   const clearHistory = async () => {
     spotifyHistory.value = null
-    await localForage.removeItem(spotifyHistoryKey)
+    await localForage.removeItem(spotifyHistoryEntriesKey)
   }
 
   const getHistory = async () => {
@@ -37,7 +43,10 @@ export const useSpotifyHistoryStore = defineStore('spotifyHistoryStore', () => {
 
   const setHistory = async (value: SpotifyHistory) => {
     spotifyHistory.value = value
-    await localForage.setItem<SpotifyHistory>(spotifyHistoryKey, value)
+    await localForage.setItem<SpotifyHistoryEntry[]>(
+      spotifyHistoryEntriesKey,
+      value.Entries
+    )
   }
 
   return {

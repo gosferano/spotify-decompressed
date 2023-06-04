@@ -13,9 +13,14 @@ export const msToText = (ms: number, showDays = false) => {
   else return totalDays + 'd'
 }
 
+export const isDevEnvironment = () => {
+  return process.env.NODE_ENV === 'development'
+}
+
 export default defineNuxtPlugin((/* nuxtApp */) => {
   return {
     provide: {
+      isDevEnvironment,
       msToText,
     },
   }

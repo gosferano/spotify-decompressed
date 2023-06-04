@@ -49,7 +49,7 @@
                 target="blank"
                 icon-right="spotify"
                 class="is-primary"
-                disabled
+                :disabled="!$isDevEnvironment()"
               >
                 Log in with
               </o-button>
