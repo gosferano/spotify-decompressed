@@ -36,30 +36,24 @@
         class="navbar-menu"
         :class="{ 'is-active': showNav }"
       >
+        <div class="navbar-start">
+          <div class="navbar-item">
+            <NuxtLink to="/" class="is-primary">Home</NuxtLink>
+          </div>
+          <div class="navbar-item">
+            <NuxtLink to="/enhance" class="is-primary">Enhance</NuxtLink>
+          </div>
+        </div>
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="buttons">
-              <o-button
+              <SpotifyLogInButton
                 v-if="
                   spotifyHistoryStore.spotifyHistory &&
                   !spotifyUserStore.isAuthorized
                 "
-                tag="a"
-                :href="spotifyUserStore.authorizeUrl"
-                target="blank"
-                icon-right="spotify"
-                class="is-primary"
-                :disabled="!$isDevEnvironment()"
-              >
-                Log in with
-              </o-button>
-              <o-button
-                v-if="spotifyUserStore.isAuthorized"
-                class="is-secondary"
-                @click="spotifyUserStore.clearToken"
-              >
-                Log out
-              </o-button>
+              />
+              <SpotifyLogOutButton v-if="spotifyUserStore.isAuthorized" />
             </div>
           </div>
         </div>
