@@ -1,4 +1,5 @@
 export default class SpotifyHistoryEntry {
+  public readonly Id: string
   constructor(
     public readonly ConnectionCountry: string = '',
     public readonly EpisodeName: string = '',
@@ -21,7 +22,13 @@ export default class SpotifyHistoryEntry {
     public readonly Timestamp: Date = new Date(),
     public readonly UserAgent: string = '',
     public readonly Username: string = ''
-  ) {}
+  ) {
+    this.Id =
+      this.SpotifyTrackUri +
+      this.SpotifyEpisodeUri +
+      '_' +
+      this.Timestamp.valueOf()
+  }
 
   public static FromJson(value: {
     conn_country: string

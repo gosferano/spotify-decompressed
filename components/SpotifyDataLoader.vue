@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import SpotifyHistoryZipReader from '~/composables/spotify/spotifyHistoryZipReader'
+import SpotifyHistoryZipReader from '~/utils/spotify/spotifyHistoryZipReader'
 import { useSpotifyHistoryStore } from '~/stores/spotifyHistoryStore'
 
 let isDataValid = true

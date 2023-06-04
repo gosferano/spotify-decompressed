@@ -323,12 +323,12 @@
 
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue'
-import SpotifyHistory from '~/composables/spotify/spotifyHistory'
-import SpotifyHistoryAlbumStats from '~/composables/spotify/spotifyHistoryAlbumStats'
-import SpotifyHistoryArtistStats from '~/composables/spotify/spotifyHistoryArtistStats'
-import SpotifyHistoryEntriesContainer from '~/composables/spotify/spotifyHistoryEntriesContainer'
-import SpotifyHistoryGlobalStats from '~/composables/spotify/spotifyHistoryGlobalStats'
-import SpotifyHistoryTrackStats from '~/composables/spotify/spotifyHistoryTrackStats'
+import SpotifyHistory from '~/utils/spotify/spotifyHistory'
+import SpotifyHistoryAlbumStats from '~/utils/spotify/spotifyHistoryAlbumStats'
+import SpotifyHistoryArtistStats from '~/utils/spotify/spotifyHistoryArtistStats'
+import SpotifyHistoryEntriesContainer from '~/utils/spotify/spotifyHistoryEntriesContainer'
+import SpotifyHistoryGlobalStats from '~/utils/spotify/spotifyHistoryGlobalStats'
+import SpotifyHistoryTrackStats from '~/utils/spotify/spotifyHistoryTrackStats'
 
 const dates = ref<[Date, Date]>()
 const sortBy = ref<'count' | 'duration'>('duration')

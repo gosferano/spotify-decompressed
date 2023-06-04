@@ -1,6 +1,6 @@
 import jszip from 'jszip'
 import SpotifyHistoryEntry from './spotifyHistoryEntry'
-import SpotifyHistory from '~/composables/spotify/spotifyHistory'
+import SpotifyHistory from '~/utils/spotify/spotifyHistory'
 
 export default class SpotifyHistoryZipReader {
   async parseExtendedHistory(
