@@ -1,12 +1,14 @@
 import SpotifyHistoryAlbumStats from './spotifyHistoryAlbumStats'
 import SpotifyHistoryArtistStats from './spotifyHistoryArtistStats'
 import SpotifyHistoryEntry from './spotifyHistoryEntry'
+import SpotifyHistoryFilter from './SpotifyHistoryFilter'
 import SpotifyHistoryGlobalStats from './spotifyHistoryGlobalStats'
 import SpotifyHistoryTrackStats from './spotifyHistoryTrackStats'
 
 export default class SpotifyHistory {
   readonly DateFrom: Date
   readonly DateTo: Date
+  readonly IsEnhanced: boolean = false
 
   constructor(
     public readonly Entries: Array<SpotifyHistoryEntry> = new Array<SpotifyHistoryEntry>()
@@ -16,12 +18,7 @@ export default class SpotifyHistory {
     this.DateTo = dates[1]
   }
 
-  getStats(
-    from: Date,
-    to: Date,
-    sortBy: 'count' | 'duration',
-    includeSkipped: boolean
-  ) {
+  getStats(filter: SpotifyHistoryFilter) {
     let totalMsStreamed = 0
     let totalCountStreamed = 0
 
@@ -42,12 +39,15 @@ export default class SpotifyHistory {
 
     this.Entries.forEach((entry) => {
       // Skip entries outside of the date range
-      if (entry.Timestamp < from || entry.Timestamp > to) {
+      if (
+        entry.Timestamp < filter.Dates[0] ||
+        entry.Timestamp > filter.Dates[1]
+      ) {
         return
       }
 
       // Skip entries that were skipped if includeSkipped is false
-      if (!includeSkipped && entry.ReasonEnd !== 'trackdone') {
+      if (!filter.IncludeSkipped && entry.ReasonEnd !== 'trackdone') {
         return
       }
 
@@ -120,7 +120,7 @@ export default class SpotifyHistory {
     return {
       global: globalStats,
       tracks:
-        sortBy === 'count'
+        filter.SortBy === 'count'
           ? Array.from(entriesByTrack.values()).sort(
               (a, b) => -a.Count + b.Count
             )
@@ -128,7 +128,7 @@ export default class SpotifyHistory {
               (a, b) => -a.MsPlayed + b.MsPlayed
             ),
       artists:
-        sortBy === 'count'
+        filter.SortBy === 'count'
           ? Array.from(entriesByArtist.values()).sort(
               (a, b) => -a.Count + b.Count
             )
@@ -136,7 +136,7 @@ export default class SpotifyHistory {
               (a, b) => -a.MsPlayed + b.MsPlayed
             ),
       albums:
-        sortBy === 'count'
+        filter.SortBy === 'count'
           ? Array.from(entriesByAlbum.values()).sort(
               (a, b) => -a.Count + b.Count
             )
