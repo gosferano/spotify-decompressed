@@ -1,6 +1,6 @@
 <template>
   <section class="section">
-    <div v-if="!isDataLoaded" class="container has-text-centered">
+    <div v-if="!filter" class="container has-text-centered">
       <div class="columns">
         <div class="column is-half-desktop is-offset-one-quarter-desktop">
           <SpotifyDataLoader
@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <div v-if="isDataLoaded" class="container">
+    <div v-if="filter" class="container">
       <div class="columns">
         <div
           class="column is-8-fullhd is-offset-2-fullhd is-10-widescreen is-offset-1-widescreen"
@@ -29,11 +29,11 @@
             <div class="column is-12-tablet is-6-desktop">
               <o-field label="Date range">
                 <o-datepicker
-                  v-model="dates"
+                  v-model="filter.Dates"
                   expanded
                   placeholder="Select date range"
                   range
-                  :disabled="!dates"
+                  :disabled="!filter.Dates"
                   :min-date="spotifyHistory?.DateFrom"
                   :max-date="spotifyHistory?.DateTo"
                 >
@@ -44,7 +44,7 @@
               <div class="columns is-mobile">
                 <div class="column is-6-tablet">
                   <o-field label="Sort by">
-                    <o-select v-model="sortBy" expanded>
+                    <o-select v-model="filter.SortBy" expanded>
                       <option value="count">Count</option>
                       <option value="duration">Duration</option>
                     </o-select>
@@ -53,7 +53,7 @@
 
                 <div class="column is-6-tablet">
                   <o-field label="Include skipped">
-                    <o-select v-model="includeSkipped" expanded>
+                    <o-select v-model="filter.IncludeSkipped" expanded>
                       <option :value="true">Yes</option>
                       <option :value="false">No</option>
                     </o-select>
@@ -151,12 +151,11 @@ import { ref, watch } from 'vue'
 import SpotifyHistory from '~/utils/spotify/spotifyHistory'
 import SpotifyHistoryAlbumStats from '~/utils/spotify/spotifyHistoryAlbumStats'
 import SpotifyHistoryArtistStats from '~/utils/spotify/spotifyHistoryArtistStats'
+import SpotifyHistoryFilter from '~/utils/spotify/SpotifyHistoryFilter'
 import SpotifyHistoryGlobalStats from '~/utils/spotify/spotifyHistoryGlobalStats'
 import SpotifyHistoryTrackStats from '~/utils/spotify/spotifyHistoryTrackStats'
 
-const dates = ref<[Date, Date]>()
-const sortBy = ref<'count' | 'duration'>('duration')
-const includeSkipped = ref<boolean>(false)
+const filter = ref<SpotifyHistoryFilter>()
 
 const spotifyHistory = ref<SpotifyHistory>()
 
@@ -165,44 +164,29 @@ const artistStats = ref<Array<SpotifyHistoryArtistStats>>()
 const trackStats = ref<Array<SpotifyHistoryTrackStats>>()
 const albumStats = ref<Array<SpotifyHistoryAlbumStats>>()
 
-const isDataLoaded = ref<boolean>(false)
 const activeTab = ref(1)
 
-watch(dates, () => {
-  loadStats(false)
-})
-
-watch(includeSkipped, () => {
-  loadStats(false)
-})
-
-watch(sortBy, () => {
-  loadStats(false)
+watch(filter, () => {
+  loadStats()
 })
 
 const receiveSpotifyHistory = (value: SpotifyHistory) => {
   spotifyHistory.value = value
-  dates.value = spotifyHistory.value.getDateRange()
-  loadStats(true)
+  filter.value = new SpotifyHistoryFilter(spotifyHistory.value.getDateRange())
+  loadStats()
 }
 
-const loadStats = (isFirstRun: Boolean) => {
-  if (!isFirstRun && !isDataLoaded.value) {
+const loadStats = () => {
+  if (!filter.value) {
     return
   }
 
-  const filteredStats = spotifyHistory.value!.getStats(
-    dates.value![0],
-    dates.value![1],
-    sortBy.value,
-    includeSkipped.value
-  )
+  const filteredStats = spotifyHistory.value!.getStats(filter.value)
 
   globalStats.value = filteredStats.global
   trackStats.value = filteredStats.tracks
   artistStats.value = filteredStats.artists
   albumStats.value = filteredStats.albums
-  isDataLoaded.value = true
 }
 </script>
 
