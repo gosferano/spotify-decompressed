@@ -29,7 +29,7 @@
     "@mdi/font": "^7.2.96",
     "@nuxtjs/color-mode": "^3.2.0",
     "@oruga-ui/oruga-next": "^0.6.0",
-    "@oruga-ui/theme-bulma": "^0.2.10",
+    "@oruga-ui/theme-bulma": "^0.2.11",
     "jszip": "^3.10.1"
   }
 }
