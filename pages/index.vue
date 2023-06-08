@@ -1,6 +1,6 @@
 <template>
   <section class="section">
-    <div v-if="!filter" class="container has-text-centered">
+    <div v-if="!dates" class="container has-text-centered">
       <div class="columns">
         <div class="column is-half-desktop is-offset-one-quarter-desktop">
           <SpotifyDataLoader
@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <div v-if="filter" class="container">
+    <div v-if="dates" class="container">
       <div class="columns">
         <div
           class="column is-8-fullhd is-offset-2-fullhd is-10-widescreen is-offset-1-widescreen"
@@ -29,11 +29,11 @@
             <div class="column is-12-tablet is-6-desktop">
               <o-field label="Date range">
                 <o-datepicker
-                  v-model="filter.Dates"
+                  v-model="dates"
                   expanded
                   placeholder="Select date range"
                   range
-                  :disabled="!filter.Dates"
+                  :disabled="!dates"
                   :min-date="spotifyHistory?.DateFrom"
                   :max-date="spotifyHistory?.DateTo"
                 >
@@ -44,7 +44,7 @@
               <div class="columns is-mobile">
                 <div class="column is-6-tablet">
                   <o-field label="Sort by">
-                    <o-select v-model="filter.SortBy" expanded>
+                    <o-select v-model="sortBy" expanded>
                       <option value="count">Count</option>
                       <option value="duration">Duration</option>
                     </o-select>
@@ -53,7 +53,7 @@
 
                 <div class="column is-6-tablet">
                   <o-field label="Include skipped">
-                    <o-select v-model="filter.IncludeSkipped" expanded>
+                    <o-select v-model="includeSkipped" expanded>
                       <option :value="true">Yes</option>
                       <option :value="false">No</option>
                     </o-select>
@@ -155,7 +155,9 @@ import SpotifyHistoryFilter from '~/utils/spotify/SpotifyHistoryFilter'
 import SpotifyHistoryGlobalStats from '~/utils/spotify/spotifyHistoryGlobalStats'
 import SpotifyHistoryTrackStats from '~/utils/spotify/spotifyHistoryTrackStats'
 
-const filter = ref<SpotifyHistoryFilter>()
+const dates = ref<[Date, Date]>()
+const sortBy = ref<'count' | 'duration'>('duration')
+const includeSkipped = ref<boolean>(false)
 
 const spotifyHistory = ref<SpotifyHistory>()
 
@@ -166,22 +168,36 @@ const albumStats = ref<Array<SpotifyHistoryAlbumStats>>()
 
 const activeTab = ref(1)
 
-watch(filter, () => {
+watch(dates, () => {
+  loadStats()
+})
+
+watch(sortBy, () => {
+  loadStats()
+})
+
+watch(includeSkipped, () => {
   loadStats()
 })
 
 const receiveSpotifyHistory = (value: SpotifyHistory) => {
   spotifyHistory.value = value
-  filter.value = new SpotifyHistoryFilter(spotifyHistory.value.getDateRange())
+  dates.value = [spotifyHistory.value.DateFrom, spotifyHistory.value.DateTo]
   loadStats()
 }
 
 const loadStats = () => {
-  if (!filter.value) {
+  if (!dates.value) {
     return
   }
 
-  const filteredStats = spotifyHistory.value!.getStats(filter.value)
+  const filter = new SpotifyHistoryFilter(
+    dates.value,
+    sortBy.value,
+    includeSkipped.value
+  )
+
+  const filteredStats = spotifyHistory.value!.getStats(filter)
 
   globalStats.value = filteredStats.global
   trackStats.value = filteredStats.tracks
