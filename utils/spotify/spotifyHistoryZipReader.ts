@@ -14,7 +14,10 @@ export default class SpotifyHistoryZipReader {
 
   async getEntries(archive: jszip): Promise<SpotifyHistoryEntry[]> {
     const historyEntryListPromises = Object.keys(archive.files)
-      .filter((fileName: string) => fileName.startsWith('MyData/endsong_'))
+      .filter(
+        (fileName: string) =>
+          fileName.startsWith('MyData/') && fileName.endsWith('.json')
+      )
       .map(async function (filename) {
         const contentAsText = await archive.files[filename].async('string')
         return JSON.parse(contentAsText)
