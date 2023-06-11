@@ -81,6 +81,9 @@
           <NuxtLink to="https://github.com/gosferano">gosferano</NuxtLink>
         </p>
         <p>
+          <NuxtLink to="#" @click="clearHistory()">Clear data</NuxtLink>
+        </p>
+        <p>
           <NuxtLink
             to="https://github.com/gosferano/spotify-decompressed"
             target="blank"
@@ -101,4 +104,10 @@ const showNav = ref<Boolean>(false)
 const colorMode = useColorMode()
 const spotifyHistoryStore = useSpotifyHistoryStore()
 const spotifyUserStore = useSpotifyUserStore()
+
+const clearHistory = () => {
+  spotifyHistoryStore.clearHistory()
+  spotifyUserStore.clearToken()
+  window.location.reload()
+}
 </script>
