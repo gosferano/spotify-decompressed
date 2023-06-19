@@ -4,18 +4,19 @@
       <p class="is-flex is-justify-content-center">
         <o-icon icon="archive" size="large" class="mdi-48px"> </o-icon>
       </p>
-      <p class="is-flex is-justify-content-center">
-        <span v-if="isCheckingLocalStorage">
-          Checking local storage for Spotify data
-        </span>
-        <span v-else-if="fileRef && !isDataValid" class="has-text-danger">
-          Data file {{ fileRef.name }} is invalid</span
-        >
-        <span v-else-if="fileRef && isDataValid">
-          Loading data from {{ fileRef.name }}</span
-        >
-        <span v-else>Click to explore your Spotify data</span>
+      <p
+        v-if="isCheckingLocalStorage"
+        class="is-flex is-justify-content-center"
+      >
+        Checking local storage for Spotify data
       </p>
+      <p v-else-if="fileRef && !isDataValid" class="has-text-danger">
+        {{ invalidDataMessage }}
+      </p>
+      <p v-else-if="fileRef && isDataValid">
+        Loading data from {{ fileRef.name }}
+      </p>
+      <p v-else>Click to explore your Spotify data</p>
     </o-upload>
   </o-field>
   <span class="is-size-7">
@@ -31,7 +32,8 @@ import SpotifyHistory from '~/utils/spotify/spotifyHistory'
 import SpotifyHistoryZipReader from '~/utils/spotify/spotifyHistoryZipReader'
 import { useSpotifyHistoryStore } from '~/stores/spotifyHistoryStore'
 
-let isDataValid = true
+const isDataValid = ref(true)
+const invalidDataMessage = ref('')
 const fileRef = ref<File | null>(null)
 const isCheckingLocalStorage = ref<Boolean>(true)
 
@@ -44,18 +46,27 @@ watch(fileRef, async () => {
 })
 
 async function loadSpotifyHistory(value: File) {
-  isDataValid = true
+  isDataValid.value = true
   try {
     const reader = new SpotifyHistoryZipReader()
     const spotifyHistory = await reader.parseExtendedHistory(value)
+
+    if (spotifyHistory.Entries.length === 0) {
+      isDataValid.value = false
+      invalidDataMessage.value = 'File contains no Spotify listening history'
+      emit('update:isDataValid', false)
+      return
+    }
+
     spotifyHistoryStore.setHistory(spotifyHistory)
     emit('update:spotifyHistory', spotifyHistory)
   } catch {
-    isDataValid = false
+    isDataValid.value = false
+    invalidDataMessage.value = `File ${value.name} is not a valid`
     emit('update:isDataValid', false)
     return
   }
-  isDataValid = true
+  isDataValid.value = true
   emit('update:isDataValid', true)
 }
 
