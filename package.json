@@ -23,7 +23,7 @@
     "nuxt": "^3.5.3",
     "nuxt3-localforage": "^0.0.14",
     "prettier": "^2.8.8",
-    "sass": "^1.63.2"
+    "sass": "^1.64.2"
   },
   "dependencies": {
     "@mdi/font": "^7.2.96",
