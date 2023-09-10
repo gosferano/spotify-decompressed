@@ -20,7 +20,7 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-nuxt": "^4.0.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "nuxt": "^3.5.3",
+    "nuxt": "^3.7.1",
     "nuxt3-localforage": "^0.0.15",
     "prettier": "^3.0.3",
     "sass": "^1.66.1"
