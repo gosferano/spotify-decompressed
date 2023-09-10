@@ -8,7 +8,9 @@
               {{ modelValue?.GetFullName() }}
             </p>
             <p
-              v-for="entry in getTrackIds(modelValue?.Entries ?? new Set<SpotifyHistoryEntry>())"
+              v-for="entry in getTrackIds(
+                modelValue?.Entries ?? new Set<SpotifyHistoryEntry>(),
+              )"
               :key="entry.Id"
             >
               {{ entry }}

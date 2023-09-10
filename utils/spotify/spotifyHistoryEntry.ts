@@ -21,7 +21,7 @@ export default class SpotifyHistoryEntry {
     public readonly SpotifyTrackUri: string = '',
     public readonly Timestamp: Date = new Date(),
     public readonly UserAgent: string = '',
-    public readonly Username: string = ''
+    public readonly Username: string = '',
   ) {
     this.Id =
       this.SpotifyTrackUri +
@@ -74,7 +74,7 @@ export default class SpotifyHistoryEntry {
       value.spotify_track_uri,
       new Date(value.ts),
       value.user_agent_decrypted,
-      value.username
+      value.username,
     )
   }
 }

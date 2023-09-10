@@ -4,6 +4,6 @@ export default class SpotifyHistoryFilter {
   constructor(
     public Dates: [Date, Date],
     public SortBy: SortBy = 'duration',
-    public IncludeSkipped: boolean = false
+    public IncludeSkipped: boolean = false,
   ) {}
 }

@@ -76,7 +76,7 @@ const artistStatsCurrent = computed(() => {
   return $getPage(
     properties.artistStats,
     pageNumber.value,
-    properties.entriesPerPage
+    properties.entriesPerPage,
   )
 })
 </script>
