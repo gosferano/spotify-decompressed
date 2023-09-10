@@ -16,18 +16,18 @@
     "@nuxtjs/eslint-config-typescript": "^12.0.0",
     "@pinia/nuxt": "^0.4.11",
     "@types/node": "^20",
-    "eslint": "^8.42.0",
+    "eslint": "^8.49.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-nuxt": "^4.0.0",
     "eslint-plugin-prettier": "^4.2.1",
     "nuxt": "^3.5.3",
-    "nuxt3-localforage": "^0.0.14",
+    "nuxt3-localforage": "^0.0.15",
     "prettier": "^2.8.8",
     "sass": "^1.63.2"
   },
   "dependencies": {
     "@mdi/font": "^7.2.96",
-    "@nuxtjs/color-mode": "^3.2.0",
+    "@nuxtjs/color-mode": "^3.3.0",
     "@oruga-ui/oruga-next": "^0.6.0",
     "@oruga-ui/theme-bulma": "^0.2.11",
     "jszip": "^3.10.1"
