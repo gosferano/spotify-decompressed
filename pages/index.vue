@@ -84,7 +84,7 @@
                     <p class="title">
                       {{
                         $msToText(
-                          globalStats!.MsPlayed / globalStats!.TimesPlayed
+                          globalStats!.MsPlayed / globalStats!.TimesPlayed,
                         )
                       }}
                     </p>
@@ -194,7 +194,7 @@ const loadStats = () => {
   const filter = new SpotifyHistoryFilter(
     dates.value,
     sortBy.value,
-    includeSkipped.value
+    includeSkipped.value,
   )
 
   const filteredStats = spotifyHistory.value!.getStats(filter)

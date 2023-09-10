@@ -4,7 +4,7 @@ import SpotifyHistory from '~/utils/spotify/spotifyHistory'
 
 export default class SpotifyHistoryZipReader {
   async parseExtendedHistory(
-    file: ArrayBuffer | File | null
+    file: ArrayBuffer | File | null,
   ): Promise<SpotifyHistory> {
     if (file == null) return new SpotifyHistory([])
     const archive = await jszip.loadAsync(file)
@@ -16,7 +16,7 @@ export default class SpotifyHistoryZipReader {
     const historyEntryListPromises = Object.keys(archive.files)
       .filter(
         (fileName: string) =>
-          fileName.startsWith('MyData/') && fileName.endsWith('.json')
+          fileName.startsWith('MyData/') && fileName.endsWith('.json'),
       )
       .map(async function (filename) {
         const contentAsText = await archive.files[filename].async('string')

@@ -4,6 +4,6 @@ export default class SpotifyHistoryGlobalStats {
     public TimesPlayed: number,
     public TotalTracks: number,
     public TotalArtists: number,
-    public TotalAlbums: number
+    public TotalAlbums: number,
   ) {}
 }

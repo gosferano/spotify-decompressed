@@ -13,7 +13,7 @@ export default class SpotifyHistoryTrackStats
     public readonly AlbumName: string,
     public readonly ArtistName: string,
     public Count: number,
-    public MsPlayed: number
+    public MsPlayed: number,
   ) {
     this.Tracks = new Set<string>()
     this.Entries = new Set<SpotifyHistoryEntry>()

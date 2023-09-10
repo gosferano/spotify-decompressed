@@ -79,7 +79,7 @@ const albumStatsCurrent = computed(() => {
   return $getPage(
     properties.albumStats,
     pageNumber.value,
-    properties.entriesPerPage
+    properties.entriesPerPage,
   )
 })
 </script>

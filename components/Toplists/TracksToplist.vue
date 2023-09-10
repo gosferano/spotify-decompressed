@@ -87,7 +87,7 @@ const trackStatsCurrent = computed(() => {
   return $getPage(
     properties.trackStats,
     pageNumber.value,
-    properties.entriesPerPage
+    properties.entriesPerPage,
   )
 })
 </script>

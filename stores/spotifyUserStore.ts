@@ -16,7 +16,7 @@ export const useSpotifyUserStore = defineStore('spotifyUserStore', () => {
       '&scope=' +
       encodeURIComponent(scopes.join(' ')) +
       '&redirect_uri=' +
-      encodeURIComponent(redirectUri)
+      encodeURIComponent(redirectUri),
   )
 
   const clearToken = () => {

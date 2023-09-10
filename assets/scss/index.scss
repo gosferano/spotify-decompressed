@@ -50,7 +50,9 @@ html.dark {
   .datepicker .dropdown-menu {
     background-color: $black;
     border-color: $grey-darker;
-    box-shadow: 0 0.5em 1em -0.125em $grey, 0 0px 0 1px $grey-lighter;
+    box-shadow:
+      0 0.5em 1em -0.125em $grey,
+      0 0px 0 1px $grey-lighter;
   }
 
   // Footer

@@ -12,7 +12,7 @@ export const useSpotifyHistoryStore = defineStore('spotifyHistoryStore', () => {
 
   const getHistoryFileFromLocalForage = async () => {
     const historyEntries = await localForage.getItem<SpotifyHistoryEntry[]>(
-      spotifyHistoryEntriesKey
+      spotifyHistoryEntriesKey,
     )
 
     if (!historyEntries) {
@@ -45,7 +45,7 @@ export const useSpotifyHistoryStore = defineStore('spotifyHistoryStore', () => {
     spotifyHistory.value = value
     await localForage.setItem<SpotifyHistoryEntry[]>(
       spotifyHistoryEntriesKey,
-      value.Entries
+      value.Entries,
     )
   }
 
@@ -59,5 +59,5 @@ export const useSpotifyHistoryStore = defineStore('spotifyHistoryStore', () => {
 
 if (import.meta.hot)
   import.meta.hot.accept(
-    acceptHMRUpdate(useSpotifyHistoryStore, import.meta.hot)
+    acceptHMRUpdate(useSpotifyHistoryStore, import.meta.hot),
   )
