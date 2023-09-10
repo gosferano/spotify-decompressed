@@ -13,7 +13,7 @@
     "lintfix": "prettier --write --list-different . && npm run lint:js -- --fix"
   },
   "devDependencies": {
-    "@nuxtjs/eslint-config-typescript": "^12.0.0",
+    "@nuxtjs/eslint-config-typescript": "^12.1.0",
     "@pinia/nuxt": "^0.4.11",
     "@types/node": "^20",
     "eslint": "^8.49.0",
