@@ -67,14 +67,12 @@
 
     <footer class="footer">
       <div class="content has-text-centered">
-        <o-field>
-          <o-switch
-            v-model="colorMode.preference"
-            true-value="dark"
-            false-value="light"
-          >
-            {{ colorMode.preference }}
-          </o-switch>
+        <o-field class="is-flex is-justify-content-center">
+          <o-select v-model="colorMode.preference" size="small">
+            <option value="system">system</option>
+            <option value="light">light</option>
+            <option value="dark">dark</option>
+          </o-select>
         </o-field>
         <p>
           <strong>Spotify Decompressed</strong> by
