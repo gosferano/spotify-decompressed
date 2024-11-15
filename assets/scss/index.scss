@@ -83,12 +83,12 @@ html.dark {
 
   // Table
   .table.is-striped {
-    tbody tr {
-      background-color: $black-bis;
-    }
-
     tbody tr:not(.is-selected):nth-child(even) {
       background-color: $black;
+    }
+
+    tbody tr:not(.is-selected):nth-child(odd) {
+      background-color: $black-bis;
     }
   }
 
