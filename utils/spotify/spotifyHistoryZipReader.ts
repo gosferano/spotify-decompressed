@@ -16,7 +16,9 @@ export default class SpotifyHistoryZipReader {
     const historyEntryListPromises = Object.keys(archive.files)
       .filter(
         (fileName: string) =>
-          fileName.startsWith('MyData/') && fileName.endsWith('.json'),
+          (fileName.startsWith('MyData/') ||
+            fileName.startsWith('Spotify Extended Streaming History')) &&
+          fileName.endsWith('.json'),
       )
       .map(async function (filename) {
         const contentAsText = await archive.files[filename].async('string')
