@@ -23,8 +23,8 @@
 </template>
 
 <script setup lang="ts">
-import SpotifyHistoryEntriesContainer from '~/composables/spotify/spotifyHistoryEntriesContainer'
-import SpotifyHistoryEntry from '~/composables/spotify/spotifyHistoryEntry'
+import type { SpotifyHistoryEntriesContainer } from '~/utils/spotify/spotifyHistoryEntriesContainer'
+import SpotifyHistoryEntry from '~/utils/spotify/spotifyHistoryEntry'
 
 const getTrackIds = (entries: Set<SpotifyHistoryEntry>) => {
   const trackUris = new Map<string, string>()

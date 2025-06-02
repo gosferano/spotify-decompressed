@@ -1,5 +1,5 @@
 import SpotifyHistoryEntry from './spotifyHistoryEntry'
-import SpotifyHistoryEntriesContainer from './spotifyHistoryEntriesContainer'
+import type { SpotifyHistoryEntriesContainer } from './spotifyHistoryEntriesContainer'
 
 export default class SpotifyHistoryTrackStats
   implements SpotifyHistoryEntriesContainer
