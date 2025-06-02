@@ -1,6 +1,6 @@
 import SpotifyHistoryEntry from './spotifyHistoryEntry'
 
-export default interface SpotifyHistoryEntriesContainer {
+export type SpotifyHistoryEntriesContainer = {
   Entries: Set<SpotifyHistoryEntry>
   Tracks: Set<string>
   AlbumName: string | undefined
