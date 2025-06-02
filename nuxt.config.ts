@@ -16,27 +16,35 @@ export default defineNuxtConfig({
       link: [{ rel: 'icon', type: 'image/x-icon', href: 'favicon.ico' }],
     },
   },
+
   alias: {
     pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs',
   },
+
   plugins: ['~/plugins/utils.ts'],
   modules: ['@nuxtjs/color-mode', '@pinia/nuxt', 'nuxt3-localforage'],
   ssr: false,
+
   css: [
     '@oruga-ui/oruga-next/src/scss/oruga-full-vars.scss',
     '@mdi/font/css/materialdesignicons.min.css',
     'assets/scss/index.scss',
   ],
+
   typescript: {
     strict: true,
     shim: false,
   },
+
   colorMode: {
     classSuffix: '',
   },
+
   vite: {
     optimizeDeps: {
       include: ['localforage'],
     },
   },
+
+  compatibilityDate: '2025-06-02',
 })
