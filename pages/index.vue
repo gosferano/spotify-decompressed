@@ -155,6 +155,8 @@ import SpotifyHistoryFilter from '~/utils/spotify/SpotifyHistoryFilter'
 import SpotifyHistoryGlobalStats from '~/utils/spotify/spotifyHistoryGlobalStats'
 import SpotifyHistoryTrackStats from '~/utils/spotify/spotifyHistoryTrackStats'
 
+const suppressWatcher = ref(false)
+
 const dates = ref<[Date, Date]>()
 const sortBy = ref<'count' | 'duration'>('duration')
 const includeSkipped = ref<boolean>(false)
@@ -182,12 +184,14 @@ watch(includeSkipped, () => {
 
 const receiveSpotifyHistory = (value: SpotifyHistory) => {
   spotifyHistory.value = value
+  suppressWatcher.value = true
   dates.value = [spotifyHistory.value.DateFrom, spotifyHistory.value.DateTo]
   loadStats()
+  suppressWatcher.value = false
 }
 
 const loadStats = () => {
-  if (!dates.value) {
+  if (!dates.value || suppressWatcher.value) {
     return
   }
 
