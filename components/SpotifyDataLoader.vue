@@ -28,8 +28,8 @@
 </template>
 
 <script setup lang="ts">
-import SpotifyHistory from '~/utils/spotify/spotifyHistory'
-import SpotifyHistoryZipReader from '~/utils/spotify/spotifyHistoryZipReader'
+import SpotifyHistory from '~/utils/spotifyHistory/spotifyHistory'
+import SpotifyHistoryZipReader from '~/utils/spotifyHistory/spotifyHistoryZipReader'
 import { useSpotifyHistoryStore } from '~/stores/spotifyHistoryStore'
 
 const isDataValid = ref(true)

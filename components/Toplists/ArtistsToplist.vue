@@ -54,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import SpotifyHistoryArtistStats from '~/utils/spotify/spotifyHistoryArtistStats'
+import SpotifyHistoryArtistStats from '~/utils/spotifyHistory/spotifyHistoryArtistStats'
 
 const { $getPage } = useNuxtApp()
 

@@ -8,7 +8,6 @@ import SpotifyHistoryTrackStats from './spotifyHistoryTrackStats'
 export default class SpotifyHistory {
   readonly DateFrom: Date
   readonly DateTo: Date
-  readonly IsEnhanced: boolean = false
 
   constructor(
     public readonly Entries: Array<SpotifyHistoryEntry> = new Array<SpotifyHistoryEntry>(),
