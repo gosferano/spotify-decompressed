@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import SpotifyHistory from '~/utils/spotify/spotifyHistory'
-import SpotifyHistoryEntry from '~/utils/spotify/spotifyHistoryEntry'
+import SpotifyHistory from '~/utils/spotifyHistory/spotifyHistory'
+import SpotifyHistoryEntry from '~/utils/spotifyHistory/spotifyHistoryEntry'
 
 export const useSpotifyHistoryStore = defineStore('spotifyHistoryStore', () => {
   const spotifyHistory = ref<SpotifyHistory | null>(null)

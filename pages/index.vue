@@ -148,12 +148,12 @@
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue'
-import SpotifyHistory from '~/utils/spotify/spotifyHistory'
-import SpotifyHistoryAlbumStats from '~/utils/spotify/spotifyHistoryAlbumStats'
-import SpotifyHistoryArtistStats from '~/utils/spotify/spotifyHistoryArtistStats'
-import SpotifyHistoryFilter from '~/utils/spotify/SpotifyHistoryFilter'
-import SpotifyHistoryGlobalStats from '~/utils/spotify/spotifyHistoryGlobalStats'
-import SpotifyHistoryTrackStats from '~/utils/spotify/spotifyHistoryTrackStats'
+import SpotifyHistory from '~/utils/spotifyHistory/spotifyHistory'
+import SpotifyHistoryAlbumStats from '~/utils/spotifyHistory/spotifyHistoryAlbumStats'
+import SpotifyHistoryArtistStats from '~/utils/spotifyHistory/spotifyHistoryArtistStats'
+import SpotifyHistoryFilter from '~/utils/spotifyHistory/SpotifyHistoryFilter'
+import SpotifyHistoryGlobalStats from '~/utils/spotifyHistory/spotifyHistoryGlobalStats'
+import SpotifyHistoryTrackStats from '~/utils/spotifyHistory/spotifyHistoryTrackStats'
 
 const suppressWatcher = ref(false)
 
