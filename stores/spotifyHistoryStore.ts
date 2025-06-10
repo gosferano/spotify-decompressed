@@ -35,7 +35,7 @@ export const useSpotifyHistoryStore = defineStore('spotifyHistoryStore', () => {
     const storedSpotifyHistory = await getHistoryFileFromLocalForage()
     if (storedSpotifyHistory) {
       spotifyHistory.value = storedSpotifyHistory as SpotifyHistory
-      return storedSpotifyHistory
+      return spotifyHistory.value
     }
 
     return null

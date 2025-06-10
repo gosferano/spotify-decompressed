@@ -17,6 +17,16 @@ export default class SpotifyHistory {
     this.DateTo = dates[1]
   }
 
+  getAllDistinctTrackIds(): string[] {
+    const trackIds: Set<string> = new Set<string>()
+    this.Entries.forEach((entry) => {
+      if (entry.SpotifyTrackUri) {
+        trackIds.add(entry.SpotifyTrackUri.split(':')[2])
+      }
+    })
+    return Array.from(trackIds)
+  }
+
   getStats(filter: SpotifyHistoryFilter) {
     let totalMsStreamed = 0
     let totalCountStreamed = 0
