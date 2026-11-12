@@ -21,7 +21,7 @@
     "@types/node": "^26",
     "eslint": "^10.14.0",
     "eslint-config-prettier": "^10.1.8",
-    "nuxt": "^3.17.5",
+    "nuxt": "^4.6.4",
     "nuxt3-localforage": "^0.0.15",
     "prettier": "^3.0.3",
     "sass": "^1.108.2",
