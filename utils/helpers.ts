@@ -1,4 +1,6 @@
-// Auto-imported by Nuxt, so these are usable directly in templates and scripts
+// Auto-imported in scripts. Import explicitly in components that use these
+// in templates: since @pinia/nuxt 0.5, vue-tsc no longer sees Nuxt's
+// template auto-import types, so template-only use fails the type check
 
 export const msToText = (ms: number, showDays = false) => {
   const msInSecond = 1000
