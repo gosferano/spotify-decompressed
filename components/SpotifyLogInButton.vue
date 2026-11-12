@@ -12,5 +12,6 @@
 </template>
 
 <script setup lang="ts">
+import { isDevEnvironment } from '~/utils/helpers'
 import { useSpotifyUserStore } from '~/stores/spotifyUserStore'
 </script>
