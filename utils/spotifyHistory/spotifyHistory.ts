@@ -55,7 +55,9 @@ export default class SpotifyHistory {
         return
       }
 
-      // Skip entries that were skipped if includeSkipped is false
+      // Skip entries that were skipped if includeSkipped is false.
+      // Uses reason_end rather than the `skipped` field, which older
+      // exports always report as false.
       if (!filter.IncludeSkipped && entry.ReasonEnd !== 'trackdone') {
         return
       }
@@ -103,15 +105,17 @@ export default class SpotifyHistory {
       existingArtistEntry.Entries.add(entry)
       existingArtistEntry.Tracks.add(entry.SpotifyTrackUri)
 
-      // Collect album stats
-      if (!entriesByAlbum.has(albumName)) {
+      // Collect album stats. Album names aren't unique across artists
+      // (e.g. "Greatest Hits"), so key by both.
+      const albumKey = JSON.stringify([artistName, albumName])
+      if (!entriesByAlbum.has(albumKey)) {
         entriesByAlbum.set(
-          albumName,
-          new SpotifyHistoryAlbumStats(albumName, entry.AlbumArtistName, 0, 0),
+          albumKey,
+          new SpotifyHistoryAlbumStats(albumName, artistName, 0, 0),
         )
       }
 
-      const existingAlbumEntry = entriesByAlbum.get(albumName)!
+      const existingAlbumEntry = entriesByAlbum.get(albumKey)!
       existingAlbumEntry.MsPlayed += entry.MsPlayed
       existingAlbumEntry.Count += 1
       existingAlbumEntry.Entries.add(entry)
@@ -156,14 +160,21 @@ export default class SpotifyHistory {
   }
 
   getDateRange(): [Date, Date] {
-    let minDate = new Date()
-    let maxDate = new Date('1900-01-01')
+    // An empty history has no range; collapse it to now rather than
+    // returning an inverted one
+    if (this.Entries.length === 0) {
+      const now = new Date()
+      return [now, new Date(now)]
+    }
+
+    let min = Infinity
+    let max = -Infinity
     this.Entries.forEach((entry) => {
-      const entryDate = new Date(entry.Timestamp)
-      minDate = minDate < entryDate ? minDate : entryDate
-      maxDate = maxDate > entryDate ? maxDate : entryDate
+      const time = new Date(entry.Timestamp).valueOf()
+      min = Math.min(min, time)
+      max = Math.max(max, time)
     })
 
-    return [minDate, maxDate]
+    return [new Date(min), new Date(max)]
   }
 }
