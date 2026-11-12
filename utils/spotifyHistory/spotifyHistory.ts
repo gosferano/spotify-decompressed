@@ -178,3 +178,5 @@ export default class SpotifyHistory {
     return [new Date(min), new Date(max)]
   }
 }
+
+export type SpotifyHistoryStats = ReturnType<SpotifyHistory['getStats']>
