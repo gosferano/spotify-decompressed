@@ -58,7 +58,7 @@
 
 <script setup lang="ts">
 import type { SpotifyHistoryEntriesContainer } from '~/utils/spotifyHistory/spotifyHistoryEntriesContainer'
-import SpotifyHistoryAlbumStats from '~/utils/spotifyHistory/spotifyHistoryAlbumStats'
+import type SpotifyHistoryAlbumStats from '~/utils/spotifyHistory/spotifyHistoryAlbumStats'
 
 import { isDevEnvironment, msToText } from '~/utils/helpers'
 const pageNumber = ref(1)

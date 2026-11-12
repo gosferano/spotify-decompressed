@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import SpotifyHistory from '~/utils/spotifyHistory/spotifyHistory'
-import SpotifyHistoryEntry from '~/utils/spotifyHistory/spotifyHistoryEntry'
+import type SpotifyHistoryEntry from '~/utils/spotifyHistory/spotifyHistoryEntry'
 
 export const useSpotifyHistoryStore = defineStore('spotifyHistoryStore', () => {
   // Shallow: a deep ref would wrap every play in a reactive proxy, which

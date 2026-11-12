@@ -1,4 +1,4 @@
-import SpotifyHistoryEntry from './spotifyHistoryEntry'
+import type SpotifyHistoryEntry from './spotifyHistoryEntry'
 
 export type SpotifyHistoryEntriesContainer = {
   Entries: Set<SpotifyHistoryEntry>

@@ -77,7 +77,7 @@
 
 <script lang="ts" setup>
 import { computed, ref, shallowRef } from 'vue'
-import SpotifyHistory from '~/utils/spotifyHistory/spotifyHistory'
+import type SpotifyHistory from '~/utils/spotifyHistory/spotifyHistory'
 import SpotifyHistoryFilter from '~/utils/spotifyHistory/SpotifyHistoryFilter'
 
 const dates = ref<[Date, Date]>()

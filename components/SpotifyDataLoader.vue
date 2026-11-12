@@ -28,14 +28,14 @@
 </template>
 
 <script setup lang="ts">
-import SpotifyHistory from '~/utils/spotifyHistory/spotifyHistory'
+import type SpotifyHistory from '~/utils/spotifyHistory/spotifyHistory'
 import SpotifyHistoryZipReader from '~/utils/spotifyHistory/spotifyHistoryZipReader'
 import { useSpotifyHistoryStore } from '~/stores/spotifyHistoryStore'
 
 const isDataValid = ref(true)
 const invalidDataMessage = ref('')
 const fileRef = ref<File | null>(null)
-const isCheckingLocalStorage = ref<Boolean>(true)
+const isCheckingLocalStorage = ref<boolean>(true)
 
 const emit = defineEmits(['update:isDataValid', 'update:spotifyHistory'])
 

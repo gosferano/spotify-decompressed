@@ -1,14 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { rawEntry, type RawHistoryEntry } from './fixtures'
+import { rawEntry, toEntry, type RawHistoryEntry } from './fixtures'
 import SpotifyHistory from '~/utils/spotifyHistory/spotifyHistory'
-import SpotifyHistoryEntry from '~/utils/spotifyHistory/spotifyHistoryEntry'
 import SpotifyHistoryFilter from '~/utils/spotifyHistory/SpotifyHistoryFilter'
 
 const historyOf = (...entries: Partial<RawHistoryEntry>[]) =>
-  new SpotifyHistory(
-    // FromJson is typed for non-null fields; real exports contain nulls
-    entries.map((e) => SpotifyHistoryEntry.FromJson(rawEntry(e) as any)),
-  )
+  new SpotifyHistory(entries.map((e) => toEntry(rawEntry(e))))
 
 const allTime: [Date, Date] = [
   new Date('2000-01-01T00:00:00Z'),
@@ -36,10 +32,10 @@ describe('SpotifyHistory', () => {
 
     it('handles histories too large to spread into function arguments', () => {
       const entries = Array.from({ length: 300_000 }, (_, i) =>
-        SpotifyHistoryEntry.FromJson(
+        toEntry(
           rawEntry({
             ts: new Date(Date.UTC(2020, 0, 1) + i * 60_000).toISOString(),
-          }) as any,
+          }),
         ),
       )
 
