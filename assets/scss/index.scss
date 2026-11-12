@@ -1,24 +1,41 @@
 $spotify-green: #1db954;
-$primary: $spotify-green;
-$information: $spotify-green;
-$link: $spotify-green;
-@import 'bulma/sass/utilities/_all';
-@import 'bulma/bulma';
-@import '@oruga-ui/theme-bulma/dist/scss/bulma';
+
+// Bulma with the Oruga theme. Dark mode is Bulma's own: @nuxtjs/color-mode
+// sets .theme-dark / .theme-light on <html>
+@use '@oruga-ui/theme-bulma/scss/theme-build.scss' with (
+  $primary: $spotify-green,
+  $link: $spotify-green,
+  // The theme's datepicker uses fixed light colours; use Bulma's
+  // scheme-aware ones so it follows dark mode
+  $datepicker-item-color: var(--bulma-text),
+  $datepicker-item-disabled-color: var(--bulma-text-weak),
+  $datepicker-item-hover-within-background-color: var(--bulma-background)
+);
 
 #main-content {
   min-height: 50vh;
   display: block;
 }
 
-.upload-draggable.is-hovered {
+.upload .dragzone:hover,
+.upload .dragzone.is-hovered {
   border-color: $spotify-green;
   color: $spotify-green;
 }
 
-@mixin dark-theme-base {
-  color: $grey-light;
-  background-color: $black;
+// Native UI (scrollbars, select menus, popovers) follows the theme too
+.theme-dark {
+  color-scheme: dark;
+}
+
+.theme-light {
+  color-scheme: light;
+}
+
+// The datepicker opens in a native popover, whose default background is the
+// browser's, not Bulma's
+.datepicker-overlay {
+  background-color: var(--bulma-scheme-main);
 }
 
 .footer {
@@ -26,110 +43,4 @@ $link: $spotify-green;
   position: relative;
   bottom: 0;
   width: 100%;
-}
-
-// Navbar
-.navbar {
-  background-color: $white-bis;
-}
-
-html.dark {
-  @include dark-theme-base;
-
-  body,
-  table {
-    @include dark-theme-base;
-  }
-
-  a:hover,
-  strong {
-    color: $grey-lighter;
-  }
-
-  // Datepicker
-  .datepicker .dropdown-menu {
-    background-color: $black;
-    border-color: $grey-darker;
-    box-shadow:
-      0 0.5em 1em -0.125em $grey,
-      0 0px 0 1px $grey-lighter;
-  }
-
-  // Footer
-  .footer {
-    background-color: $black-bis;
-  }
-
-  // Navbar
-  .navbar {
-    background-color: $black-bis;
-  }
-
-  .navbar-item,
-  .navbar-link {
-    color: $light;
-  }
-
-  .navbar-menu {
-    @media screen and (max-width: 1023px) {
-      background-color: $black-bis;
-    }
-  }
-
-  // Label
-  .label {
-    color: $grey-light;
-  }
-
-  // Table
-  .table.is-striped {
-    tbody tr:not(.is-selected):nth-child(even) {
-      background-color: $black;
-    }
-
-    tbody tr:not(.is-selected):nth-child(odd) {
-      background-color: $black-bis;
-    }
-  }
-
-  .table {
-    thead td,
-    thead th {
-      color: $light;
-    }
-  }
-
-  // Tabs
-  .tabs {
-    a {
-      color: $grey-lighter;
-      border-bottom-color: $grey-darker;
-    }
-
-    a:hover {
-      border-bottom-color: $grey-lighter;
-    }
-  }
-
-  .b-tabs {
-    .tabs:not(.is-toggle),
-    .tabs:not(.is-toggle-rounded) {
-      border-bottom-color: $grey-darker;
-    }
-
-    .tabs div a.is-active {
-      border-bottom-color: $primary;
-    }
-  }
-
-  // Tag
-  .tag:not(body).is-dark {
-    color: $dark;
-    background-color: $light;
-  }
-
-  // Title
-  .title {
-    color: $grey-lighter;
-  }
 }

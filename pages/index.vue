@@ -9,7 +9,7 @@
         </div>
         <div v-if="false" class="column">
           <o-button
-            type="is-primary"
+            variant="primary"
             icon-left="spotify"
             expanded
             outlined

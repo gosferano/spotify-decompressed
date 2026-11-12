@@ -19,11 +19,7 @@ export default defineNuxtConfig({
   modules: ['@nuxtjs/color-mode', '@pinia/nuxt', 'nuxt3-localforage'],
   ssr: false,
 
-  css: [
-    '@oruga-ui/oruga-next/src/scss/oruga-full-vars.scss',
-    '@mdi/font/css/materialdesignicons.min.css',
-    'assets/scss/index.scss',
-  ],
+  css: ['@mdi/font/css/materialdesignicons.min.css', 'assets/scss/index.scss'],
 
   typescript: {
     strict: true,
@@ -31,10 +27,19 @@ export default defineNuxtConfig({
   },
 
   colorMode: {
+    // Bulma's dark mode keys off .theme-dark / .theme-light
+    classPrefix: 'theme-',
     classSuffix: '',
   },
 
   vite: {
+    css: {
+      preprocessorOptions: {
+        // Bulma and the Oruga theme still use Sass syntax that newer Sass
+        // deprecates; don't flood the build log with warnings about them
+        scss: { quietDeps: true },
+      },
+    },
     optimizeDeps: {
       include: ['localforage'],
     },

@@ -16,14 +16,8 @@
       position="right"
     >
       <span class="is-pulled-right">
-        <a v-if="isDevEnvironment()">
-          <o-icon
-            type="a"
-            icon="code-braces"
-            size="small"
-            @click="showDebugInfoFor = props.row"
-          >
-          </o-icon>
+        <a v-if="isDevEnvironment()" @click="showDebugInfoFor = props.row">
+          <o-icon icon="code-braces" size="small" />
         </a>
         <span class="tag is-dark">
           <o-icon icon="music" size="small"> </o-icon>
@@ -42,16 +36,19 @@
   </o-table>
 
   <o-pagination
-    v-model:current="pageNumber"
+    v-model="pageNumber"
     :total="albumStats!.length"
     :per-page="entriesPerPage"
-    order="centered"
+    position="centered"
     :range-before="2"
     :range-after="2"
   >
   </o-pagination>
 
-  <o-modal v-model:active="showDebugInfoFor">
+  <o-modal
+    :active="showDebugInfoFor !== undefined"
+    @update:active="showDebugInfoFor = undefined"
+  >
     <EntriesDebugInfo v-model="showDebugInfoFor"></EntriesDebugInfo>
   </o-modal>
 </template>
