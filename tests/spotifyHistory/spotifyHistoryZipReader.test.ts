@@ -73,7 +73,9 @@ describe('SpotifyHistoryZipReader', () => {
       ],
     })
 
-    const [entry] = (await reader.parseExtendedHistory(zip)).Entries
+    const { Entries } = await reader.parseExtendedHistory(zip)
+    expect(Entries).toHaveLength(1)
+    const entry = Entries[0]!
 
     expect(entry.Timestamp).toEqual(new Date('2024-03-01T08:30:00Z'))
     expect(entry.MsPlayed).toBe(1234)

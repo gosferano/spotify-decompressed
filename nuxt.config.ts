@@ -16,7 +16,7 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ['@nuxtjs/color-mode', '@pinia/nuxt', 'nuxt3-localforage'],
+  modules: ['@nuxtjs/color-mode', '@pinia/nuxt'],
   ssr: false,
 
   css: ['@mdi/font/css/materialdesignicons.min.css', 'assets/scss/index.scss'],
@@ -40,8 +40,15 @@ export default defineNuxtConfig({
         scss: { quietDeps: true },
       },
     },
+    // Pre-bundle these up front, so the dev server doesn't discover them
+    // on first load and reload the page
     optimizeDeps: {
-      include: ['localforage'],
+      include: [
+        '@oruga-ui/oruga-next',
+        '@oruga-ui/theme-bulma',
+        'jszip',
+        'localforage',
+      ],
     },
   },
 

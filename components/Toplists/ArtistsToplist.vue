@@ -54,7 +54,6 @@
 import type { SpotifyHistoryEntriesContainer } from '~/utils/spotifyHistory/spotifyHistoryEntriesContainer'
 import type SpotifyHistoryArtistStats from '~/utils/spotifyHistory/spotifyHistoryArtistStats'
 
-import { isDevEnvironment, msToText } from '~/utils/helpers'
 const pageNumber = ref(1)
 const showDebugInfoFor = ref<SpotifyHistoryEntriesContainer>()
 

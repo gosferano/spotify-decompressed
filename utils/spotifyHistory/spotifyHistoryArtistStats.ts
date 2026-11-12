@@ -1,9 +1,7 @@
 import type { SpotifyHistoryEntriesContainer } from './spotifyHistoryEntriesContainer'
 import type SpotifyHistoryEntry from './spotifyHistoryEntry'
 
-export default class SpotifyHistoryArtistStats
-  implements SpotifyHistoryEntriesContainer
-{
+export default class SpotifyHistoryArtistStats implements SpotifyHistoryEntriesContainer {
   Tracks: Set<string>
   Entries: Set<SpotifyHistoryEntry>
   AlbumName = undefined

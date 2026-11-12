@@ -77,7 +77,6 @@
 <script setup lang="ts">
 import type { SpotifyHistoryStats } from '~/utils/spotifyHistory/spotifyHistory'
 
-import { msToText } from '~/utils/helpers'
 defineProps({
   stats: {
     type: Object as PropType<SpotifyHistoryStats>,
