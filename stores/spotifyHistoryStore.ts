@@ -1,3 +1,4 @@
+import localforage from 'localforage'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import SpotifyHistory from '~/utils/spotifyHistory/spotifyHistory'
 import type SpotifyHistoryEntry from '~/utils/spotifyHistory/spotifyHistoryEntry'
@@ -6,7 +7,8 @@ export const useSpotifyHistoryStore = defineStore('spotifyHistoryStore', () => {
   // Shallow: a deep ref would wrap every play in a reactive proxy, which
   // made each filter change several times slower
   const spotifyHistory = shallowRef<SpotifyHistory | null>(null)
-  const localForage = useLocalForage().createInstance({
+  // Same name and store as before, so previously cached history still loads
+  const localForage = localforage.createInstance({
     name: 'spotify-decompressed',
     storeName: 'spotifyExtendedHistory',
   })

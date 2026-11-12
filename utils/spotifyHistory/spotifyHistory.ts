@@ -20,8 +20,10 @@ export default class SpotifyHistory {
   getAllDistinctTrackIds(): string[] {
     const trackIds: Set<string> = new Set<string>()
     this.Entries.forEach((entry) => {
-      if (entry.SpotifyTrackUri) {
-        trackIds.add(entry.SpotifyTrackUri.split(':')[2])
+      // spotify:track:<id>
+      const trackId = entry.SpotifyTrackUri?.split(':')[2]
+      if (trackId) {
+        trackIds.add(trackId)
       }
     })
     return Array.from(trackIds)

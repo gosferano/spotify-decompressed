@@ -231,15 +231,15 @@ describe('SpotifyHistory', () => {
         'spotify:track:long',
         'spotify:track:short',
       ])
-      expect(byDuration.artists[0].ArtistName).toBe('Long artist')
-      expect(byDuration.albums[0].AlbumName).toBe('Long album')
+      expect(byDuration.artists[0]?.ArtistName).toBe('Long artist')
+      expect(byDuration.albums[0]?.AlbumName).toBe('Long album')
 
       expect(byCount.tracks.map((t) => t.SpotifyTrackUri)).toEqual([
         'spotify:track:short',
         'spotify:track:long',
       ])
-      expect(byCount.artists[0].ArtistName).toBe('Short artist')
-      expect(byCount.albums[0].AlbumName).toBe('Short album')
+      expect(byCount.artists[0]?.ArtistName).toBe('Short artist')
+      expect(byCount.albums[0]?.AlbumName).toBe('Short album')
     })
   })
 })

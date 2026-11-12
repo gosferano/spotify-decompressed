@@ -13,28 +13,29 @@
     "lintfix": "prettier --write --list-different . && npm run lint:js -- --fix",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "vue-tsc --noEmit"
+    "typecheck": "vue-tsc -b --noEmit"
   },
   "devDependencies": {
     "@nuxt/eslint-config": "^1.17.0",
-    "@pinia/nuxt": "0.11.2",
+    "@pinia/nuxt": "^1.0.3",
     "@types/node": "^26",
     "eslint": "^10.14.0",
     "eslint-config-prettier": "^10.1.8",
-    "nuxt": "^3.17.5",
-    "nuxt3-localforage": "^0.0.15",
+    "nuxt": "^4.6.4",
     "prettier": "^3.0.3",
     "sass": "^1.108.2",
     "typescript": "~5.8",
-    "vitest": "^4.1.12",
+    "vitest": "^5.1.0",
     "vue-tsc": "^3.3.14"
   },
   "dependencies": {
     "@mdi/font": "^7.2.96",
-    "@nuxtjs/color-mode": "^3.3.0",
+    "@nuxtjs/color-mode": "^4.1.0",
     "@oruga-ui/oruga-next": "^0.14.6",
     "@oruga-ui/theme-bulma": "^0.10.1",
     "jszip": "^3.10.1",
-    "pinia": "^3.0.4"
-  }
+    "localforage": "^1.10.0",
+    "pinia": "^4.1.0"
+  },
+  "type": "module"
 }
