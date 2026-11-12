@@ -27,6 +27,29 @@ describe('SpotifyHistory', () => {
       expect(history.DateFrom).toEqual(new Date('2023-01-01T10:00:00Z'))
       expect(history.DateTo).toEqual(new Date('2024-12-31T23:59:59Z'))
     })
+
+    it('is not inverted for an empty history', () => {
+      const history = new SpotifyHistory([])
+
+      expect(history.DateFrom.valueOf()).toBe(history.DateTo.valueOf())
+    })
+
+    it('handles histories too large to spread into function arguments', () => {
+      const entries = Array.from({ length: 300_000 }, (_, i) =>
+        SpotifyHistoryEntry.FromJson(
+          rawEntry({
+            ts: new Date(Date.UTC(2020, 0, 1) + i * 60_000).toISOString(),
+          }) as any,
+        ),
+      )
+
+      const history = new SpotifyHistory(entries)
+
+      expect(history.DateFrom).toEqual(new Date('2020-01-01T00:00:00Z'))
+      expect(history.DateTo).toEqual(
+        new Date(Date.UTC(2020, 0, 1) + 299_999 * 60_000),
+      )
+    })
   })
 
   describe('getAllDistinctTrackIds', () => {
@@ -155,6 +178,33 @@ describe('SpotifyHistory', () => {
       expect(albumA.ArtistName).toBe('A')
       expect(albumA.Count).toBe(3)
       expect(albumA.Tracks.size).toBe(2)
+    })
+
+    it('keeps same-named albums by different artists apart', () => {
+      const history = historyOf(
+        {
+          spotify_track_uri: 'spotify:track:a',
+          master_metadata_album_artist_name: 'Artist A',
+          master_metadata_album_album_name: 'Greatest Hits',
+          ms_played: 100,
+        },
+        {
+          spotify_track_uri: 'spotify:track:b',
+          master_metadata_album_artist_name: 'Artist B',
+          master_metadata_album_album_name: 'Greatest Hits',
+          ms_played: 10,
+        },
+      )
+
+      const stats = history.getStats(new SpotifyHistoryFilter(allTime))
+
+      expect(stats.global.TotalAlbums).toBe(2)
+      expect(
+        stats.albums.map((a) => [a.ArtistName, a.AlbumName, a.MsPlayed]),
+      ).toEqual([
+        ['Artist A', 'Greatest Hits', 100],
+        ['Artist B', 'Greatest Hits', 10],
+      ])
     })
 
     it('sorts by total duration or by play count', () => {
