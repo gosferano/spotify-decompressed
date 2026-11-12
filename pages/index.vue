@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <div v-if="dates" class="container">
+    <div v-if="stats" class="container">
       <div class="columns">
         <div
           class="column is-8-fullhd is-offset-2-fullhd is-10-widescreen is-offset-1-widescreen"
@@ -33,7 +33,6 @@
                   expanded
                   placeholder="Select date range"
                   range
-                  :disabled="!dates"
                   :min-date="spotifyHistory?.DateFrom"
                   :max-date="spotifyHistory?.DateTo"
                 >
@@ -69,77 +68,7 @@
         <div
           class="column is-8-fullhd is-offset-2-fullhd is-10-widescreen is-offset-1-widescreen"
         >
-          <o-tabs v-model="activeTab" :expanded="true">
-            <o-tab-item label="Global stats">
-              <nav class="level">
-                <div class="level-item has-text-centered">
-                  <div>
-                    <p class="heading">Duration played</p>
-                    <p class="title">{{ $msToText(globalStats!.MsPlayed) }}</p>
-                  </div>
-                </div>
-                <div class="level-item has-text-centered">
-                  <div>
-                    <p class="heading">Avg. time per track</p>
-                    <p class="title">
-                      {{
-                        $msToText(
-                          globalStats!.MsPlayed / globalStats!.TimesPlayed,
-                        )
-                      }}
-                    </p>
-                  </div>
-                </div>
-                <div class="level-item has-text-centered">
-                  <div>
-                    <p class="heading">Times played</p>
-                    <p class="title">{{ globalStats!.TimesPlayed }}</p>
-                  </div>
-                </div>
-              </nav>
-              <nav class="level">
-                <div class="level-item has-text-centered">
-                  <div>
-                    <p class="heading">Tracks discovered</p>
-                    <p class="title">{{ globalStats!.TotalTracks }}</p>
-                  </div>
-                </div>
-                <div class="level-item has-text-centered">
-                  <div>
-                    <p class="heading">Artists discovered</p>
-                    <p class="title">{{ globalStats!.TotalArtists }}</p>
-                  </div>
-                </div>
-                <div class="level-item has-text-centered">
-                  <div>
-                    <p class="heading">Albums discovered</p>
-                    <p class="title">{{ globalStats!.TotalAlbums }}</p>
-                  </div>
-                </div>
-              </nav>
-            </o-tab-item>
-
-            <o-tab-item label="Top Tracks" class="toplist">
-              <ToplistsTracksToplist
-                :entries-per-page="25"
-                :track-stats="trackStats ?? []"
-              />
-            </o-tab-item>
-
-            <o-tab-item label="Top Artists" class="toplist">
-              <ToplistsArtistsToplist
-                :entries-per-page="25"
-                :artist-stats="artistStats ?? []"
-              />
-            </o-tab-item>
-
-            <o-tab-item label="Top Albums" class="toplist">
-              <ToplistsAlbumsToplist
-                :entries-per-page="25"
-                :album-stats="albumStats ?? []"
-              />
-            </o-tab-item>
-          </o-tabs>
+          <SpotifyHistoryStatsTabs :stats="stats" />
         </div>
       </div>
     </div>
@@ -147,66 +76,31 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { computed, ref, shallowRef } from 'vue'
 import SpotifyHistory from '~/utils/spotifyHistory/spotifyHistory'
-import SpotifyHistoryAlbumStats from '~/utils/spotifyHistory/spotifyHistoryAlbumStats'
-import SpotifyHistoryArtistStats from '~/utils/spotifyHistory/spotifyHistoryArtistStats'
 import SpotifyHistoryFilter from '~/utils/spotifyHistory/SpotifyHistoryFilter'
-import SpotifyHistoryGlobalStats from '~/utils/spotifyHistory/spotifyHistoryGlobalStats'
-import SpotifyHistoryTrackStats from '~/utils/spotifyHistory/spotifyHistoryTrackStats'
-
-const suppressWatcher = ref(false)
 
 const dates = ref<[Date, Date]>()
 const sortBy = ref<'count' | 'duration'>('duration')
 const includeSkipped = ref<boolean>(false)
 
-const spotifyHistory = ref<SpotifyHistory>()
+// Shallow: the history holds every play ever, and deep reactivity would
+// wrap each entry in a proxy that getStats then has to go through
+const spotifyHistory = shallowRef<SpotifyHistory>()
 
-const globalStats = ref<SpotifyHistoryGlobalStats>()
-const artistStats = ref<Array<SpotifyHistoryArtistStats>>()
-const trackStats = ref<Array<SpotifyHistoryTrackStats>>()
-const albumStats = ref<Array<SpotifyHistoryAlbumStats>>()
+const stats = computed(() => {
+  if (!spotifyHistory.value || !dates.value) {
+    return undefined
+  }
 
-const activeTab = ref(1)
-
-watch(dates, () => {
-  loadStats()
-})
-
-watch(sortBy, () => {
-  loadStats()
-})
-
-watch(includeSkipped, () => {
-  loadStats()
+  return spotifyHistory.value.getStats(
+    new SpotifyHistoryFilter(dates.value, sortBy.value, includeSkipped.value),
+  )
 })
 
 const receiveSpotifyHistory = (value: SpotifyHistory) => {
   spotifyHistory.value = value
-  suppressWatcher.value = true
-  dates.value = [spotifyHistory.value.DateFrom, spotifyHistory.value.DateTo]
-  loadStats()
-  suppressWatcher.value = false
-}
-
-const loadStats = () => {
-  if (!dates.value || suppressWatcher.value) {
-    return
-  }
-
-  const filter = new SpotifyHistoryFilter(
-    dates.value,
-    sortBy.value,
-    includeSkipped.value,
-  )
-
-  const filteredStats = spotifyHistory.value!.getStats(filter)
-
-  globalStats.value = filteredStats.global
-  trackStats.value = filteredStats.tracks
-  artistStats.value = filteredStats.artists
-  albumStats.value = filteredStats.albums
+  dates.value = [value.DateFrom, value.DateTo]
 }
 </script>
 
