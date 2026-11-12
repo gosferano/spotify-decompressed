@@ -3,7 +3,9 @@ import SpotifyHistory from '~/utils/spotifyHistory/spotifyHistory'
 import SpotifyHistoryEntry from '~/utils/spotifyHistory/spotifyHistoryEntry'
 
 export const useSpotifyHistoryStore = defineStore('spotifyHistoryStore', () => {
-  const spotifyHistory = ref<SpotifyHistory | null>(null)
+  // Shallow: a deep ref would wrap every play in a reactive proxy, which
+  // made each filter change several times slower
+  const spotifyHistory = shallowRef<SpotifyHistory | null>(null)
   const localForage = useLocalForage().createInstance({
     name: 'spotify-decompressed',
     storeName: 'spotifyExtendedHistory',
