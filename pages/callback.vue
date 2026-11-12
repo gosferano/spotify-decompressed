@@ -13,7 +13,7 @@
 import { useSpotifyUserStore } from '~/stores/spotifyUserStore'
 
 const spotifyHistoryStore = useSpotifyUserStore()
-const isLoggingIn = ref<Boolean>(true)
+const isLoggingIn = ref<boolean>(true)
 
 onMounted(() => {
   // Get the access token and token type from the URL hash

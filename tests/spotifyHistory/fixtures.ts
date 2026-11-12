@@ -1,4 +1,5 @@
 import JSZip from 'jszip'
+import SpotifyHistoryEntry from '~/utils/spotifyHistory/spotifyHistoryEntry'
 
 // Shape of one entry in Spotify's extended streaming history JSON files
 export type RawHistoryEntry = {
@@ -51,6 +52,12 @@ export const rawEntry = (
   incognito_mode: false,
   ...overrides,
 })
+
+// FromJson is typed for non-null fields; real exports contain nulls
+export const toEntry = (raw: RawHistoryEntry) =>
+  SpotifyHistoryEntry.FromJson(
+    raw as unknown as Parameters<typeof SpotifyHistoryEntry.FromJson>[0],
+  )
 
 export const buildZip = async (
   files: Record<string, unknown>,

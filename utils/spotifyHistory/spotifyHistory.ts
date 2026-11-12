@@ -1,7 +1,7 @@
 import SpotifyHistoryAlbumStats from './spotifyHistoryAlbumStats'
 import SpotifyHistoryArtistStats from './spotifyHistoryArtistStats'
-import SpotifyHistoryEntry from './spotifyHistoryEntry'
-import SpotifyHistoryFilter from './SpotifyHistoryFilter'
+import type SpotifyHistoryEntry from './spotifyHistoryEntry'
+import type SpotifyHistoryFilter from './SpotifyHistoryFilter'
 import SpotifyHistoryGlobalStats from './spotifyHistoryGlobalStats'
 import SpotifyHistoryTrackStats from './spotifyHistoryTrackStats'
 

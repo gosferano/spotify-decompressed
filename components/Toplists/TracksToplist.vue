@@ -62,7 +62,7 @@
 
 <script setup lang="ts">
 import type { SpotifyHistoryEntriesContainer } from '~/utils/spotifyHistory/spotifyHistoryEntriesContainer'
-import SpotifyHistoryTrackStats from '~/utils/spotifyHistory/spotifyHistoryTrackStats'
+import type SpotifyHistoryTrackStats from '~/utils/spotifyHistory/spotifyHistoryTrackStats'
 
 import { isDevEnvironment, msToText } from '~/utils/helpers'
 const toTrackWebUrl = (spotifyTrackUri: string) => {

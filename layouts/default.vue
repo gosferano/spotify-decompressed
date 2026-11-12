@@ -99,7 +99,7 @@ import { useSpotifyHistoryStore } from '~/stores/spotifyHistoryStore'
 import { useSpotifyUserStore } from '~/stores/spotifyUserStore'
 
 import { isDevEnvironment } from '~/utils/helpers'
-const showNav = ref<Boolean>(false)
+const showNav = ref<boolean>(false)
 const colorMode = useColorMode()
 const spotifyHistoryStore = useSpotifyHistoryStore()
 const spotifyUserStore = useSpotifyUserStore()

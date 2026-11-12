@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
 import type { SpotifyHistoryEntriesContainer } from '~/utils/spotifyHistory/spotifyHistoryEntriesContainer'
-import SpotifyHistoryEntry from '~/utils/spotifyHistory/spotifyHistoryEntry'
+import type SpotifyHistoryEntry from '~/utils/spotifyHistory/spotifyHistoryEntry'
 
 const getTrackIds = (entries: Set<SpotifyHistoryEntry>) => {
   const trackUris = new Map<string, string>()
