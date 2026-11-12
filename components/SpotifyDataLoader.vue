@@ -34,7 +34,7 @@ import { useSpotifyHistoryStore } from '~/stores/spotifyHistoryStore'
 
 const isDataValid = ref(true)
 const invalidDataMessage = ref('')
-const fileRef = ref<File | null>(null)
+const fileRef = ref<File>()
 const isCheckingLocalStorage = ref<boolean>(true)
 
 const emit = defineEmits(['update:isDataValid', 'update:spotifyHistory'])
