@@ -24,7 +24,7 @@
       label="Stats"
     >
       <span class="is-pulled-right">
-        <a v-if="$isDevEnvironment()">
+        <a v-if="isDevEnvironment()">
           <o-icon
             type="a"
             icon="code-braces"
@@ -39,7 +39,7 @@
         </span>
         <span class="tag is-dark">
           <o-icon icon="timer" size="small"> </o-icon>
-          {{ $msToText(props.row.MsPlayed) }}
+          {{ msToText(props.row.MsPlayed) }}
         </span>
       </span>
     </o-table-column>
@@ -61,9 +61,8 @@
 </template>
 
 <script setup lang="ts">
+import type { SpotifyHistoryEntriesContainer } from '~/utils/spotifyHistory/spotifyHistoryEntriesContainer'
 import SpotifyHistoryTrackStats from '~/utils/spotifyHistory/spotifyHistoryTrackStats'
-
-const { $getPage } = useNuxtApp()
 
 const toTrackWebUrl = (spotifyTrackUri: string) => {
   return `https://open.spotify.com/track/${
@@ -72,7 +71,7 @@ const toTrackWebUrl = (spotifyTrackUri: string) => {
 }
 
 const pageNumber = ref(1)
-const showDebugInfoFor = ref(null)
+const showDebugInfoFor = ref<SpotifyHistoryEntriesContainer>()
 
 const properties = defineProps({
   trackStats: {
@@ -86,7 +85,7 @@ const properties = defineProps({
 })
 
 const trackStatsCurrent = computed(() => {
-  return $getPage(
+  return getPage(
     properties.trackStats,
     pageNumber.value,
     properties.entriesPerPage,

@@ -12,7 +12,8 @@
     "lint": "npm run lint:js && npm run lint:prettier",
     "lintfix": "prettier --write --list-different . && npm run lint:js -- --fix",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "typecheck": "vue-tsc --noEmit"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
@@ -26,13 +27,16 @@
     "nuxt3-localforage": "^0.0.15",
     "prettier": "^3.0.3",
     "sass": "^1.66.1",
-    "vitest": "^4.1.12"
+    "typescript": "~5.8",
+    "vitest": "^4.1.12",
+    "vue-tsc": "^3.3.14"
   },
   "dependencies": {
     "@mdi/font": "^7.2.96",
     "@nuxtjs/color-mode": "^3.3.0",
     "@oruga-ui/oruga-next": "^0.6.0",
     "@oruga-ui/theme-bulma": "^0.2.11",
-    "jszip": "^3.10.1"
+    "jszip": "^3.10.1",
+    "pinia": "^2.1.3"
   }
 }

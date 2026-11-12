@@ -8,12 +8,12 @@
               {{ modelValue?.GetFullName() }}
             </p>
             <p
-              v-for="entry in getTrackIds(
+              v-for="[trackUri, trackName] in getTrackIds(
                 modelValue?.Entries ?? new Set<SpotifyHistoryEntry>(),
               )"
-              :key="entry.Id"
+              :key="trackUri"
             >
-              {{ entry }}
+              {{ trackName }} ({{ trackUri }})
             </p>
           </div>
         </div>

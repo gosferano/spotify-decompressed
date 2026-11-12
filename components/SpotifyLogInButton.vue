@@ -5,7 +5,7 @@
     target="blank"
     icon-right="spotify"
     class="is-primary"
-    :disabled="!$isDevEnvironment()"
+    :disabled="!isDevEnvironment()"
   >
     Log in with
   </o-button>

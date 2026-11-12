@@ -8,7 +8,6 @@ export default defineNuxtConfig({
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         {
-          hid: 'description',
           name: 'description',
           content: 'Spotify extended history viewer',
         },
@@ -17,11 +16,6 @@ export default defineNuxtConfig({
     },
   },
 
-  alias: {
-    pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs',
-  },
-
-  plugins: ['~/plugins/utils.ts'],
   modules: ['@nuxtjs/color-mode', '@pinia/nuxt', 'nuxt3-localforage'],
   ssr: false,
 
