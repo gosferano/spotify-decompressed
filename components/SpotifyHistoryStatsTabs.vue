@@ -5,7 +5,7 @@
         <div class="level-item has-text-centered">
           <div>
             <p class="heading">Duration played</p>
-            <p class="title">{{ $msToText(stats.global.MsPlayed) }}</p>
+            <p class="title">{{ msToText(stats.global.MsPlayed) }}</p>
           </div>
         </div>
         <div class="level-item has-text-centered">
@@ -13,7 +13,7 @@
             <p class="heading">Avg. time per track</p>
             <p class="title">
               {{
-                $msToText(
+                msToText(
                   stats.global.TimesPlayed
                     ? stats.global.MsPlayed / stats.global.TimesPlayed
                     : 0,

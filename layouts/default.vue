@@ -32,7 +32,7 @@
       </div>
 
       <div
-        v-if="$isDevEnvironment()"
+        v-if="isDevEnvironment()"
         id="navbarButtons"
         class="navbar-menu"
         :class="{ 'is-active': showNav }"
