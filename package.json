@@ -19,7 +19,7 @@
     "@nuxt/eslint-config": "^1.17.0",
     "@pinia/nuxt": "^1.0.3",
     "@types/node": "^26",
-    "eslint": "^10.14.0",
+    "eslint": "^10.15.0",
     "eslint-config-prettier": "^10.1.8",
     "nuxt": "^4.6.4",
     "prettier": "^3.0.3",
