@@ -55,6 +55,7 @@
       <ToplistsTracksToplist
         :entries-per-page="25"
         :track-stats="stats.tracks"
+        :sort-by="sortBy"
       />
     </o-tab-item>
 
@@ -62,6 +63,7 @@
       <ToplistsArtistsToplist
         :entries-per-page="25"
         :artist-stats="stats.artists"
+        :sort-by="sortBy"
       />
     </o-tab-item>
 
@@ -69,17 +71,23 @@
       <ToplistsAlbumsToplist
         :entries-per-page="25"
         :album-stats="stats.albums"
+        :sort-by="sortBy"
       />
     </o-tab-item>
   </o-tabs>
 </template>
 
 <script setup lang="ts">
+import type { SortBy } from '~/utils/spotifyHistory/SpotifyHistoryFilter'
 import type { SpotifyHistoryStats } from '~/utils/spotifyHistory/spotifyHistory'
 
 defineProps({
   stats: {
     type: Object as PropType<SpotifyHistoryStats>,
+    required: true,
+  },
+  sortBy: {
+    type: String as PropType<SortBy>,
     required: true,
   },
 })

@@ -16,6 +16,10 @@ export default class SpotifyHistoryAlbumStats implements SpotifyHistoryEntriesCo
     this.Entries = new Set<SpotifyHistoryEntry>()
   }
 
+  get Key() {
+    return JSON.stringify([this.ArtistName, this.AlbumName])
+  }
+
   GetFullName = () => {
     return `${this.AlbumName} by ${this.ArtistName}`
   }

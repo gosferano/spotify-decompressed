@@ -24,3 +24,7 @@ export const getPage = <T>(array: T[], page: number, pageSize: number) => {
   const end = start + pageSize
   return array.slice(start, end)
 }
+
+// Stripes by row index: the table's own striping counts expanded rows too
+export const toplistRowClass = (_row: unknown, index: number) =>
+  index % 2 ? 'is-clickable is-odd-row' : 'is-clickable'

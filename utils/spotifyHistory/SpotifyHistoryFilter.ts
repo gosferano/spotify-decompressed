@@ -1,4 +1,4 @@
-type SortBy = 'duration' | 'count'
+export type SortBy = 'duration' | 'count'
 
 export default class SpotifyHistoryFilter {
   constructor(

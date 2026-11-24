@@ -1,5 +1,15 @@
 <template>
-  <o-table :data="trackStatsCurrent" :narrowed="true" :striped="true">
+  <o-table
+    :data="trackStatsCurrent"
+    :narrowed="true"
+    row-key="Key"
+    :row-class="toplistRowClass"
+    tr-detailed-class="detail"
+    detailed
+    :show-detail-icon="false"
+    :detailed-rows="expandedRows"
+    @click="toggleRow"
+  >
     <o-table-column v-slot="props" field="index" label="#" numeric>
       {{ (pageNumber - 1) * entriesPerPage + props.index + 1 }}
     </o-table-column>
@@ -10,7 +20,11 @@
       class="is-clipped"
     >
       <span>
-        <NuxtLink :to="toTrackWebUrl(props.row.SpotifyTrackUri)" target="blank">
+        <NuxtLink
+          :to="toTrackWebUrl(props.row.SpotifyTrackUri)"
+          target="blank"
+          @click.stop
+        >
           <o-icon icon="spotify" size="small"> </o-icon>
         </NuxtLink>
         {{ props.row.TrackName }}
@@ -24,7 +38,7 @@
       label="Stats"
     >
       <span class="is-pulled-right">
-        <a v-if="isDevEnvironment()" @click="showDebugInfoFor = props.row">
+        <a v-if="isDevEnvironment()" @click.stop="showDebugInfoFor = props.row">
           <o-icon icon="code-braces" size="small" />
         </a>
         <span class="tag is-dark">
@@ -35,8 +49,12 @@
           <o-icon icon="timer" size="small"> </o-icon>
           {{ msToText(props.row.MsPlayed) }}
         </span>
+        <ToplistsToplistExpandButton :expanded="isExpanded(props.row)" />
       </span>
     </o-table-column>
+    <template #detail="{ row }">
+      <DailyListening :entries="row.Entries" :sort-by="sortBy" />
+    </template>
   </o-table>
 
   <o-pagination
@@ -58,6 +76,7 @@
 </template>
 
 <script setup lang="ts">
+import type { SortBy } from '~/utils/spotifyHistory/SpotifyHistoryFilter'
 import type { SpotifyHistoryEntriesContainer } from '~/utils/spotifyHistory/spotifyHistoryEntriesContainer'
 import type SpotifyHistoryTrackStats from '~/utils/spotifyHistory/spotifyHistoryTrackStats'
 
@@ -79,6 +98,10 @@ const properties = defineProps({
     type: Number,
     required: true,
   },
+  sortBy: {
+    type: String as PropType<SortBy>,
+    required: true,
+  },
 })
 
 const trackStatsCurrent = computed(() => {
@@ -88,4 +111,8 @@ const trackStatsCurrent = computed(() => {
     properties.entriesPerPage,
   )
 })
+
+const { expandedRows, isExpanded, toggleRow } = useExpandedRow(
+  () => trackStatsCurrent.value,
+)
 </script>

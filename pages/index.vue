@@ -68,7 +68,7 @@
         <div
           class="column is-8-fullhd is-offset-2-fullhd is-10-widescreen is-offset-1-widescreen"
         >
-          <SpotifyHistoryStatsTabs :stats="stats" />
+          <SpotifyHistoryStatsTabs :stats="stats" :sort-by="sortBy" />
         </div>
       </div>
     </div>
@@ -78,10 +78,12 @@
 <script lang="ts" setup>
 import { computed, ref, shallowRef } from 'vue'
 import type SpotifyHistory from '~/utils/spotifyHistory/spotifyHistory'
-import SpotifyHistoryFilter from '~/utils/spotifyHistory/SpotifyHistoryFilter'
+import SpotifyHistoryFilter, {
+  type SortBy,
+} from '~/utils/spotifyHistory/SpotifyHistoryFilter'
 
 const dates = ref<[Date, Date]>()
-const sortBy = ref<'count' | 'duration'>('duration')
+const sortBy = ref<SortBy>('duration')
 const includeSkipped = ref<boolean>(false)
 
 // Shallow: the history holds every play ever, and deep reactivity would

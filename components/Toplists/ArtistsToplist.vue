@@ -1,5 +1,15 @@
 <template>
-  <o-table :data="artistStatsCurrent" :narrowed="true" :striped="true">
+  <o-table
+    :data="artistStatsCurrent"
+    :narrowed="true"
+    row-key="Key"
+    :row-class="toplistRowClass"
+    tr-detailed-class="detail"
+    detailed
+    :show-detail-icon="false"
+    :detailed-rows="expandedRows"
+    @click="toggleRow"
+  >
     <o-table-column v-slot="props" field="index" label="#" numeric>
       {{ (pageNumber - 1) * entriesPerPage + props.index + 1 }}
     </o-table-column>
@@ -13,7 +23,7 @@
       label="Stats"
     >
       <span class="is-pulled-right">
-        <a v-if="isDevEnvironment()" @click="showDebugInfoFor = props.row">
+        <a v-if="isDevEnvironment()" @click.stop="showDebugInfoFor = props.row">
           <o-icon icon="code-braces" size="small" />
         </a>
         <span class="tag is-dark">
@@ -28,8 +38,12 @@
           <o-icon icon="timer" size="small"> </o-icon>
           {{ msToText(props.row.MsPlayed) }}
         </span>
+        <ToplistsToplistExpandButton :expanded="isExpanded(props.row)" />
       </span>
     </o-table-column>
+    <template #detail="{ row }">
+      <DailyListening :entries="row.Entries" :sort-by="sortBy" show-tracks />
+    </template>
   </o-table>
 
   <o-pagination
@@ -51,6 +65,7 @@
 </template>
 
 <script setup lang="ts">
+import type { SortBy } from '~/utils/spotifyHistory/SpotifyHistoryFilter'
 import type { SpotifyHistoryEntriesContainer } from '~/utils/spotifyHistory/spotifyHistoryEntriesContainer'
 import type SpotifyHistoryArtistStats from '~/utils/spotifyHistory/spotifyHistoryArtistStats'
 
@@ -66,6 +81,10 @@ const properties = defineProps({
     type: Number,
     required: true,
   },
+  sortBy: {
+    type: String as PropType<SortBy>,
+    required: true,
+  },
 })
 
 const artistStatsCurrent = computed(() => {
@@ -75,4 +94,8 @@ const artistStatsCurrent = computed(() => {
     properties.entriesPerPage,
   )
 })
+
+const { expandedRows, isExpanded, toggleRow } = useExpandedRow(
+  () => artistStatsCurrent.value,
+)
 </script>
