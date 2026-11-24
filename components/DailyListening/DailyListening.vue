@@ -87,8 +87,7 @@
           </span>
         </div>
       </template>
-      <!-- Spotify's timestamps are when a play ended -->
-      <p v-else class="has-text-grey">Finished at {{ times }}</p>
+      <DailyListeningHours v-else :hours="getDayHours(selected)" />
     </div>
   </div>
 </template>
@@ -97,6 +96,7 @@
 import type SpotifyHistoryEntry from '~/utils/spotifyHistory/spotifyHistoryEntry'
 import type { SortBy } from '~/utils/spotifyHistory/SpotifyHistoryFilter'
 import {
+  getDayHours,
   getDayTracks,
   getListeningDays,
   getListeningYears,
@@ -111,7 +111,7 @@ import {
 const properties = defineProps<{
   entries: Set<SpotifyHistoryEntry>
   sortBy: SortBy
-  // List the tracks played on a day, rather than the times
+  // List the tracks played on a day, rather than the hours
   showTracks?: boolean
 }>()
 
@@ -174,17 +174,6 @@ const toggleDay = (key: string) => {
   if (key === selectedDay.value) chosenDay.value = undefined
   else selectDay(key)
 }
-
-const times = computed(() =>
-  selected.value?.entries
-    .map((entry) =>
-      entry.Timestamp.toLocaleTimeString('en-GB', {
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
-    )
-    .join(', '),
-)
 </script>
 
 <style scoped>

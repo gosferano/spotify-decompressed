@@ -92,6 +92,15 @@ export const getDayTracks = (day: ListeningDay): TrackTotals[] => {
   )
 }
 
+// Plays in each of the day's 24 hours
+export const getDayHours = (day: ListeningDay): number[] => {
+  const hours = Array.from({ length: 24 }, () => 0)
+  for (const entry of day.entries) {
+    hours[entry.Timestamp.getHours()]! += 1
+  }
+  return hours
+}
+
 // Lowest value of each level above the first. There are fewer levels when the
 // values don't differ enough to fill them
 export const getLevelThresholds = (values: number[]): number[] => {

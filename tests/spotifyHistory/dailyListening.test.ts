@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { rawEntry, toEntry, type RawHistoryEntry } from './fixtures'
 import {
   getCalendarDays,
+  getDayHours,
   getDayTracks,
   getLevel,
   getLevelThresholds,
@@ -84,6 +85,21 @@ describe('getDayTracks', () => {
       { uri: 'spotify:track:b', name: 'B', count: 2, msPlayed: 2000 },
       { uri: 'spotify:track:a', name: 'A', count: 1, msPlayed: 1000 },
     ])
+  })
+})
+
+describe('getDayHours', () => {
+  it('counts plays by local hour', () => {
+    const days = getListeningDays([
+      playAt([2024, 1, 1, 0]),
+      playAt([2024, 1, 1, 9], { spotify_track_uri: 'spotify:track:a' }),
+      playAt([2024, 1, 1, 9], { spotify_track_uri: 'spotify:track:b' }),
+      playAt([2024, 1, 1, 23]),
+    ])
+    const hours = getDayHours(days.get('2024-01-01')!)
+
+    expect(hours).toHaveLength(24)
+    expect([hours[0], hours[9], hours[10], hours[23]]).toEqual([1, 2, 0, 1])
   })
 })
 
