@@ -28,6 +28,8 @@
           <div class="columns is-desktop">
             <div class="column is-12-tablet is-6-desktop">
               <o-field label="Date range">
+                <!-- The years listed are counted from the first date, by
+                     default only 10 ahead; min and max date trim them -->
                 <o-datepicker
                   v-model="dates"
                   expanded
@@ -35,6 +37,7 @@
                   range
                   :min-date="spotifyHistory?.DateFrom"
                   :max-date="spotifyHistory?.DateTo"
+                  :years-range="[-100, 100]"
                 >
                 </o-datepicker>
               </o-field>
