@@ -38,6 +38,18 @@ $spotify-green: #1db954;
   background-color: var(--bulma-scheme-main);
 }
 
+.toplist .table tr.is-odd-row {
+  background-color: var(--bulma-table-striped-row-even-background-color);
+}
+
+.toplist .table tr.is-clickable:hover {
+  background-color: var(--bulma-table-striped-row-even-hover-background-color);
+}
+
+.toplist .table tr.detail {
+  box-shadow: none;
+}
+
 .footer {
   clear: both;
   position: relative;

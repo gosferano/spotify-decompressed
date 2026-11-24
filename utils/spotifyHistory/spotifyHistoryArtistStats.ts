@@ -16,6 +16,10 @@ export default class SpotifyHistoryArtistStats implements SpotifyHistoryEntriesC
     this.Entries = new Set<SpotifyHistoryEntry>()
   }
 
+  get Key() {
+    return this.ArtistName
+  }
+
   GetFullName = () => {
     return `${this.ArtistName}`
   }
