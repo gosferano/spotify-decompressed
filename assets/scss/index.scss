@@ -50,6 +50,12 @@ $spotify-green: #1db954;
   box-shadow: none;
 }
 
+// The detail row stays in the page until its transition ends: hide it at once,
+// so that two rows never look expanded together
+.toplist-detail-leave-active {
+  display: none;
+}
+
 .footer {
   clear: both;
   position: relative;

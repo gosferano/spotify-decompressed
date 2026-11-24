@@ -5,6 +5,7 @@
     row-key="Key"
     :row-class="toplistRowClass"
     tr-detailed-class="detail"
+    detail-transition="toplist-detail"
     detailed
     :show-detail-icon="false"
     :detailed-rows="expandedRows"
