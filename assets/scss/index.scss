@@ -50,6 +50,36 @@ $spotify-green: #1db954;
   box-shadow: none;
 }
 
+// The detail row takes its full height at once, and only its content moves:
+// animating the height made the rows below jump
+.toplist-detail-enter-active,
+.toplist-detail-enter-active > td > * {
+  transition: 200ms ease-out;
+  transition-property: opacity, transform;
+}
+
+.toplist-detail-enter-from {
+  opacity: 0;
+
+  > td > * {
+    transform: translateY(-0.5rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toplist-detail-enter-active,
+  .toplist-detail-enter-active > td > * {
+    transition: none;
+  }
+}
+
+// A closing row stays in the page until its transition ends: hide it at once,
+// so that two rows never look expanded together. The theme sets display on
+// phones.
+.toplist-detail-leave-active {
+  display: none !important;
+}
+
 .footer {
   clear: both;
   position: relative;
